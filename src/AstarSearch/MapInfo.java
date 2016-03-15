@@ -13,18 +13,20 @@ import java.util.*;
  */
 
 public class MapInfo {
-	public List<Road> roads;
 	
-	private static int id;
+	private List<Road> _roads;
 	
-	MapInfo(){
-		roads = new ArrayList();
+	private static int _id;
+	
+	public MapInfo(){	
+		resetIndex();
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes", "boxing" })
 	public void readFromFile(String path){
 		
-		roads = new ArrayList();
-		id = 0;
+		_roads = new ArrayList();
+		_id = 0;
 		
 		try {
 			// Reading one line
@@ -37,9 +39,8 @@ public class MapInfo {
 				int xCoordinate = 0;
 				
 				// Getting values for the elements
-				for (String part : line.split("\\s+")) 
-				{
-					// System.out.println("Part: " + part);
+				for (String part : line.split("\\s+")) {
+					//System.out.println("Part: " + part);
 					
 					if (i == 0){
 						xCoordinate = Integer.valueOf(part);
@@ -62,12 +63,54 @@ public class MapInfo {
 				}
 				
 				// Creating the road element
-				Road road = new Road(id, name, startingPoint, endPoint);
-				roads.add(road);
-				id++;
+				Road road = new Road(_id, name, startingPoint, endPoint);
+				_roads.add(road);
+				_id++;
 			}
 		} catch (IOException e) {
 			System.out.println("Read: " + e.getMessage());
 		}
+	}
+
+	public List<Road> getRoads(){
+		return _roads;
+	}
+	
+	public List<Road> getRoadsByName(String name){
+		List<Road> roads = new ArrayList<Road>();
+
+		for (int i = 0; i < _roads.size(); i ++){
+			if (_roads.get(i).getStreetName().equals(name)){
+				roads.add(_roads.get(i));
+			}
+		}
+		
+		return roads;
+	}
+	
+	public Point getCrossingByStreetNames(String name1, String name2){
+
+		Point point = new Point();
+		List<Road> roads1 = getRoadsByName(name1);
+		List<Road> roads2 = getRoadsByName(name2);
+		
+		for(int i = 0; i < roads1.size(); i++){
+			for(int j = 0; j < roads2.size(); j++){
+				if (roads1.get(i).getStartingPoint().getLocation().equals(roads2.get(j).getStartingPoint().getLocation()) 
+						|| roads1.get(i).getStartingPoint().getLocation().equals(roads2.get(j).getEndPoint().getLocation())){
+					point = roads1.get(i).getStartingPoint().getLocation();
+				} 
+				if (roads1.get(i).getEndPoint().getLocation().equals(roads2.get(j).getStartingPoint().getLocation()) 
+						|| roads1.get(i).getEndPoint().getLocation().equals(roads2.get(j).getEndPoint().getLocation())){
+					point = roads1.get(i).getEndPoint().getLocation();
+				}
+			}
+		}
+		
+		return point;
+	}
+	
+	public void resetIndex(){
+		_id = 0;
 	}
 }

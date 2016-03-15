@@ -5,20 +5,29 @@ import java.io.File;
 
 public class mainClass {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		MapInfo map = new MapInfo();
 		String path = getPath();
 		map.readFromFile(path);
 		
-		System.out.println("Number of roads: " + map.roads.size());
+		System.out.println("Number of roads: " + map.getRoads().size());
 		
-		// TODO: compute starting and goal points from names
+		Point startingPoint = map.getCrossingByStreetNames("SktPedersStraede", "Larsbjoernsstraede");
+		System.out.println("Start: " + startingPoint);
+		if (startingPoint == null || startingPoint == new Point()){
+			startingPoint = new Point(35,80);
+			System.out.println("StartingPoint fail");
+		}
 		
-		// SktPedersStraede & Larsbjoernsstraede
-		Point startingPoint = new Point(10,70);
+		Point goal = map.getCrossingByStreetNames("Studiestraede", "Larsbjoernsstraede");
+		System.out.println("Goal: " + goal);
+		if (goal == null || goal == new Point()){
+			goal = new Point(45,70);
+			System.out.println("Goal fail");
+		}
 		
-		// Studiestraede & Larsbjoernsstraede.
-		Point goal = new Point(45,70);
+		AstarSearch search = new AstarSearch(map, startingPoint, goal);
 	}
 	
 	/**

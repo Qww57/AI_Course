@@ -1,7 +1,6 @@
 package AstarSearch;
 
 import java.awt.Point;
-import java.util.List;
 
 public class Road {
 	
@@ -29,6 +28,14 @@ public class Road {
 		
 	/* Getters and setters */
 	
+	public int getId(){
+		return _id;
+	}
+	
+	public double getDistance(){
+		return distance;
+	}
+	
 	public void setStreetName(String streetName){
 		_streetName = streetName;
 	}
@@ -52,21 +59,5 @@ public class Road {
 	public Point getEndPoint(){
 		return _endPoint;
 	}
-	
-	// TO BE DELETED ?
-	
-	/*
-	 * List of roads that have the same starting point as the end 
-	 * point of this road
-	 */
-	private List<Road> _crossingRoads;
-	
-	public void setFrontier(List<Road> crossingRoads){
-		_crossingRoads = crossingRoads;
-	}
-	
-	public List<Road> getFrontier(){
-		return _crossingRoads;
-	}
-	
+
 }
