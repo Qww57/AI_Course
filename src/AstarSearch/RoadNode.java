@@ -10,7 +10,7 @@ import java.util.*;
  *
  */
 
-public class RoadNode implements Comparable<RoadNode>{
+public class RoadNode extends Node implements Comparable<RoadNode>{
 	
 	private int _id;
 	

@@ -9,6 +9,12 @@ import AstarSearch.*;
 
 import org.junit.*;
 
+/**
+ * Unit test class for the methods creating the input from the resource text file.
+ * 
+ * @author Quentin
+ *
+ */
 public class MapTest {
 
 	public MapInfo map;
