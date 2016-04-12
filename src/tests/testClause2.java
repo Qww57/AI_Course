@@ -6,16 +6,18 @@ import java.util.List;
 import org.junit.Test;
 
 import InferenceEngineTwo.Node;
-import InferenceEngineTwo.AstarSearchEngine;
-import InferenceEngineTwo.AstarSearchEngine.Type;
-import InferenceEngineTwo.AstarSearchEngine.Heuristic;
+import InferenceEngineTwo.OnionModel;
 import InferenceEngineTwo.Clause;
 import InferenceEngineTwo.ClauseEvent;
+import InferenceEngineTwo.ClauseNode;
 import InferenceEngineTwo.Event;
 
+@SuppressWarnings("unused")
 public class testClause2 {
 
 	private List<Clause> knowledgeBase = new ArrayList<Clause>();
+	private List<Event> eventBase = new ArrayList<Event>();	
+	private Event goalEvent;
 	
 	@Test
 	public void testClause(){
@@ -30,23 +32,36 @@ public class testClause2 {
 		}
 		
 		// Start the A star algorithm
-		AstarSearchEngine search = new AstarSearchEngine(knowledgeBase, Heuristic.NULL, Type.PATHFINDING);
-		List<Node> results = search.startAstar();
+		OnionModel search = new OnionModel(knowledgeBase, eventBase);
+		List<ClauseEvent> events = new ArrayList<ClauseEvent>();
+		events.add(new ClauseEvent(false, goalEvent));
+		ClauseNode goal = new ClauseNode(new Clause("Goal", events));
+		List<Node> results = search.startAstar(goal);
 	}
 	
 	private void CreateKnowledgeBase(){ 
 		
 		// Creating the events
-		Event breakfast = new Event("breakfast");		 
-		Event juice = new Event("juice");		 
+		Event breakfast = new Event("breakfast");	
+		eventBase.add(breakfast);
+		Event juice = new Event("juice");	
+		eventBase.add(juice);
 		Event hotdrink = new Event("hotdrink");
+		eventBase.add(hotdrink);
 		Event tea = new Event("tea");
+		eventBase.add(tea);
 		Event coffee = new Event("coffee");
+		eventBase.add(coffee);
 		Event cream = new Event("cream");		 
+		eventBase.add(cream);
 		Event food = new Event("food");
+		eventBase.add(food);
 		Event toast = new Event("toast");
+		eventBase.add(toast);
 		Event egg = new Event("egg");
+		eventBase.add(egg);
 		Event butter = new Event("butter");
+		eventBase.add(butter);
 		
 		// Creating the clausal forms
 		List<ClauseEvent> eventsOfOne = new ArrayList<ClauseEvent>();
@@ -101,6 +116,8 @@ public class testClause2 {
 		
 		Clause ten = createSimpleClause("10", butter);
 		knowledgeBase.add(ten);
+		
+		goalEvent = breakfast;
 	}
 	
 	private static Clause createSimpleClause(String name, Event event){
