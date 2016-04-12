@@ -15,6 +15,7 @@ public class mainClass {
 		// Reading the map
 		MapInfo map = new MapInfo();
 		String path = getPath();
+		System.out.println("Read: " + path);
 		map.readFromFile(path);		
 		System.out.println("Number of roads: " + map.getRoads().size());
 		
@@ -60,7 +61,7 @@ public class mainClass {
 	}
 	
 	private static String getPath(){
-	    String path = new File("src/resources/PathFindingDataSet.txt").getAbsolutePath();
+	    String path = new File("src/Heureka/resources/PathFindingDataSet.txt").getAbsolutePath();
 	    return path;
 	}
 }
