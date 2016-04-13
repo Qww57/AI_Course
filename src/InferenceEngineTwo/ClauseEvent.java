@@ -4,12 +4,12 @@ public class ClauseEvent {
 		
 	public ClauseEvent(boolean bool, Event event){
 		this.event = event;
-		this.condition = bool;
+		this.value = bool;
 	}
 	
 	private Event event;
 	
-	private boolean condition;
+	private boolean value;
 
 	public synchronized Event getEvent() {
 		return event;
@@ -19,12 +19,12 @@ public class ClauseEvent {
 		this.event = event;
 	}
 
-	public synchronized boolean isCondition() {
-		return condition;
+	public synchronized boolean getValue() {
+		return value;
 	}
 
-	public synchronized void setCondition(boolean condition) {
-		this.condition = condition;
+	public synchronized void setValue(boolean condition) {
+		this.value = condition;
 	}
 
 }

@@ -33,8 +33,12 @@ public class Event {
 		this.status = status;
 	}
 	
+	public String toString(){
+		return "Event: " + name + " is " + status.toString();
+	}
+	
 	public void print(){
-		System.out.println("Event: " + name + " is " + status.toString());
+		System.out.println(toString());
 	}
 }
 
