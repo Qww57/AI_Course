@@ -39,9 +39,9 @@ public class InferenceEngine {
 		List<Clause> copy = new ArrayList<Clause>(knowledgeBase);
 		for (int i = 0; i < copy.size(); i++){
 			Clause clause = copy.get(i);
+			
 			// Getting the clause which are simple ones
 			if (clause.getEvents().size() == 0){
-				// System.out.println("Event of pool event: " + clause.toString());
 				ClauseEvent clauseEvent = clause.getConclusion();
 				Event simpleEvent = clauseEvent.getEvent();
 				if (clauseEvent.getValue() == true){
@@ -100,19 +100,20 @@ public class InferenceEngine {
 	    	fScore.put(current, heuristic_cost_estimate(current));
 	    	current.setFScore(fScore.get(current).doubleValue());
 	    	current.setGScore(gScore.get(current).doubleValue());
-	    		 
+	    		
+	    	solveClause(current);
+	    	
 	    	// Checking if we are getting the goal
-	    	if (current.getClause().getConclusion().getEvent().getName()
-	    			.equals(goal.getClause().getConclusion().getEvent().getName())){
+	    	String goalName = goal.getClause().getConclusion().getEvent().getName();
+	    	// if (current.getClause().getConclusion().getEvent().getName().equals(goalName)){
+	    	if (getStatusOfEventFromtPool(goalName) == Status.TRUE){
 	    		cameFrom.put(goal, current);
 	    		System.out.println("We have our goal: " + goal.getClause().getConclusion().getEvent().getName());
 	    		// results = reconstructPath(cameFrom, goal);	    		
 	    		// printAllLists(openSet, closedSet);
 	    		break;
 	    	}
-	    		 
-	    	solveClause(current);
-	    	
+	    		    	
 	    	// Updating the sets
 	    	openSet.remove(current);
 	    	closedSet.add(current);
@@ -205,6 +206,7 @@ public class InferenceEngine {
 			updateAllFCost();
 		}	
 	}
+	
 	/**
 	 * Update the value of the fScore for all elements that are still in the openSet
 	 */
@@ -264,9 +266,15 @@ public class InferenceEngine {
 			Event event = i.next();
 			for(Iterator<ClauseEvent> j = clause.getEvents().iterator(); j.hasNext();){
 				ClauseEvent clauseEvent = j.next();
-				if (clauseEvent.getEvent().equals(event)){
+				if (clauseEvent.getEvent().equals(event)
+						&& clauseEvent.getValue() == true 
+						&& event.getStatus() == Status.FALSE){
 					interesting = true;
-					//System.out.println("Interesting clause: " + clause.toString() + " - Because of event: " + event.getName());
+				}
+				if (clauseEvent.getEvent().equals(event)
+						&& clauseEvent.getValue() == false 
+						&& event.getStatus() == Status.TRUE){
+					interesting = true;
 				}
 			}
 		}
@@ -291,6 +299,7 @@ public class InferenceEngine {
 	}
 	
 	// DONE
+	
 	/**
 	 * Children of a node are the clause from the knowledgeBase 
 	 * Where at least on of their events is in the parent node
@@ -300,11 +309,11 @@ public class InferenceEngine {
 	private static void findChildren(Node node){
 		ClauseNode clauseNode = (ClauseNode) node;
 		Event event = clauseNode.getClause().getConclusion().getEvent();
+		boolean conclusionValue = clauseNode.getClause().getConclusion().getValue();
 		
 		// System.out.println("Finding children for clause: " + clauseNode.getClause().toString());
 		// System.out.println("Using the conclusion: " + event.toString());
-		
-		
+				
 		List<Clause> copy = new ArrayList<Clause>(knowledgeBase);
 		List<Clause> toDelete = new ArrayList<Clause>();
 		
@@ -313,10 +322,11 @@ public class InferenceEngine {
 			Clause clause = copy.get(i);
 			
 			boolean childFound = false;
-			// System.out.println("Dealing with clause " + clause.getClauseID());
+			
 			for (int j = 0; j < clause.getEvents().size(); j++){			
 				if (clause.getEvents().get(j).getEvent().equals(event)){
-					childFound = true;
+					if (conclusionValue != clause.getEvents().get(j).getValue())
+						childFound = true;
 				}
 			}
 			
