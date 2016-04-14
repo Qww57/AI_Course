@@ -1,4 +1,4 @@
-package InferenceEngineTwo;
+package DirectInferenceEngine;
 
 
 public class ClauseNode extends Node {

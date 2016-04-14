@@ -1,4 +1,4 @@
-package Heureka.AStar;
+package PathFinding;
 
 import java.awt.Point;
 import java.io.IOException;
@@ -87,7 +87,7 @@ public class MapInfo {
 	 * @param name
 	 * @return
 	 */
-	private List<Road> getRoadsByName(String name){
+	public List<Road> getRoadsByName(String name){
 		List<Road> roads = new ArrayList<Road>();
 
 		for (int i = 0; i < _roads.size(); i ++){

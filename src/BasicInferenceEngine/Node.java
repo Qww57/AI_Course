@@ -1,4 +1,4 @@
-package Heureka.InferenceEngine;
+package BasicInferenceEngine;
 
 import java.util.PriorityQueue;
 

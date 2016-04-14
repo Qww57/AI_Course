@@ -1,4 +1,4 @@
-package Heureka.InferenceEngine;
+package BasicInferenceEngine;
 
 public class ClauseNode extends Node{
 

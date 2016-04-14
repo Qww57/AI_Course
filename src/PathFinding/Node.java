@@ -1,4 +1,5 @@
-package Heureka.AStar;
+package PathFinding;
+
 import java.awt.Point;
 import java.util.PriorityQueue;
 

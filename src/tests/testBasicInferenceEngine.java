@@ -1,4 +1,4 @@
-package Heureka.tests;
+package tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import Heureka.InferenceEngine.AstarSearchEngine.Heuristic;
-import Heureka.InferenceEngine.AstarSearchEngine.Type;
-import Heureka.InferenceEngine.AstarSearchEngine;
-import Heureka.InferenceEngine.Node;
-import Heureka.InferenceEngine.Clause;
-import Heureka.InferenceEngine.ClauseNode;
+import BasicInferenceEngine.AstarSearchEngine.Heuristic;
+import BasicInferenceEngine.AstarSearchEngine.Type;
+import BasicInferenceEngine.AstarSearchEngine;
+import BasicInferenceEngine.Node;
+import BasicInferenceEngine.Clause;
+import BasicInferenceEngine.ClauseNode;
 
-public class testClause {
+public class testBasicInferenceEngine {
 
 	private List<Clause> knowledgeBase = new ArrayList<Clause>();
 	

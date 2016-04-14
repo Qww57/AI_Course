@@ -1,9 +1,9 @@
-package Heureka.InferenceEngine;
+package BasicInferenceEngine;
 
 import java.util.*;
 
-import Heureka.InferenceEngine.Clause.State;
-import Heureka.InferenceEngine.Node;
+import BasicInferenceEngine.Clause.State;
+import BasicInferenceEngine.Node;
 
 /**
  * A* algorithm based on the uniform A Star algorithm pseudo code described on:

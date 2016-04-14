@@ -1,4 +1,4 @@
-package Heureka.AStar;
+package PathFinding;
 
 import java.awt.Point;
 

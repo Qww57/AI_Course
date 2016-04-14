@@ -1,4 +1,4 @@
-package InferenceEngineTwo;
+package DirectInferenceEngine;
 
 import java.util.ArrayList;
 import java.util.List;

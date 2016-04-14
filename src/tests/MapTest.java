@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.List;
 
-import AstarSearch.*;
-
 import org.junit.*;
+
+import PathFinding.*;
 
 /**
  * Unit test class for the methods creating the input from the resource text file.
@@ -38,7 +38,7 @@ public class MapTest {
 		List<Road> result = map.getRoadsByName(name);
 		if (result == null){
 			fail("Should not be null");
-		}
+		} 
 	}
 	
 	private static String getPath(){

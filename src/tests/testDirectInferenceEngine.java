@@ -5,15 +5,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-import InferenceEngineTwo.Node;
-import InferenceEngineTwo.InferenceEngine;
-import InferenceEngineTwo.Clause;
-import InferenceEngineTwo.ClauseEvent;
-import InferenceEngineTwo.ClauseNode;
-import InferenceEngineTwo.Event;
+import DirectInferenceEngine.Clause;
+import DirectInferenceEngine.ClauseEvent;
+import DirectInferenceEngine.ClauseNode;
+import DirectInferenceEngine.Event;
+import DirectInferenceEngine.InferenceEngine;
+import DirectInferenceEngine.Node;
 
 @SuppressWarnings("unused")
-public class testClause2 {
+public class testDirectInferenceEngine {
 
 	private List<Clause> knowledgeBase = new ArrayList<Clause>();
 	private List<Event> eventBase = new ArrayList<Event>();	

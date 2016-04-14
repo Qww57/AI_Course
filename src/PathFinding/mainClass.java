@@ -1,10 +1,11 @@
-package Heureka.AStar;
+package PathFinding;
+
 import java.awt.Point;
 import java.io.File;
 import java.util.List;
 
-import Heureka.AStar.AstarSearch.Heuristic;
-import Heureka.AStar.AstarSearch.Type;
+import PathFinding.AstarSearch.Heuristic;
+import PathFinding.AstarSearch.Type;
 
 public class mainClass {
 
@@ -61,7 +62,7 @@ public class mainClass {
 	}
 	
 	private static String getPath(){
-	    String path = new File("src/Heureka/resources/PathFindingDataSet.txt").getAbsolutePath();
+	    String path = new File("src/resources/PathFindingDataSet.txt").getAbsolutePath();
 	    return path;
 	}
 }

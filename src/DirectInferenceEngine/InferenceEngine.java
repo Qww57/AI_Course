@@ -1,12 +1,12 @@
-package InferenceEngineTwo;
+package DirectInferenceEngine;
 
 import java.lang.reflect.Array;
 import java.util.*;
 
-import InferenceEngineTwo.ClauseNode;
-import InferenceEngineTwo.Clause;
-import InferenceEngineTwo.Event.Status;
-import InferenceEngineTwo.Node;
+import DirectInferenceEngine.Clause;
+import DirectInferenceEngine.ClauseNode;
+import DirectInferenceEngine.Node;
+import DirectInferenceEngine.Event.Status;
 
 @SuppressWarnings("unused")
 public class InferenceEngine {	
@@ -343,8 +343,7 @@ public class InferenceEngine {
 		knowledgeBase.removeAll(toDelete);
 	}
 	
-	// DONE
-	
+	// DONE	
 	private static Integer heuristic_cost_estimate(Node o1){
 		int elements = unknownElements(o1.getClause(), eventPool);
 		Integer cost = new Integer(elements);
