@@ -10,6 +10,21 @@ import DirectInferenceEngine.ClauseEvent;
 import DirectInferenceEngine.Event;
 import DirectInferenceEngine.Event.Status;
 
+/**
+ * This class is extending the {@link AStar} abstract class in order to 
+ * deal with {@link Clause} objects. It is implementing an inference engine
+ * based on direct proof, tree structure and A* Algorithm.
+ * 
+ * In order to use this class, {@link ClauseNode} should be used.
+ * 
+ * When starting the AStar algorithm, the startAStar function should not have
+ * any starting point since, this one is guessed from the knowledge base, but 
+ * should have the goal defined.
+ * 
+ * @author Quentin
+ *
+ */
+@SuppressWarnings("boxing")
 public class DirectInferenceEngine extends AStar {
 
 	public DirectInferenceEngine(List<Clause> kBase) {
@@ -18,13 +33,13 @@ public class DirectInferenceEngine extends AStar {
 
 	protected static List<Event> eventPool = new ArrayList<Event>();
 	
-	@SuppressWarnings("boxing")
 	@Override
 	protected void initializeSets(AbstractNode start, AbstractNode goal) {
-		// Set of node that have already been evaluated
+		openSet = new PriorityQueue<AbstractNode>();
+	    cameFrom = new HashMap<AbstractNode, AbstractNode>();
+	    gScore = new HashMap<AbstractNode, Double>();
+	    fScore = new HashMap<AbstractNode, Double>();
 		closedSet = new ArrayList<>();
-		
-		// Set of events that are true
 		eventPool = new ArrayList<>();
 		
 		// Initializing the event pool set 
@@ -47,25 +62,13 @@ public class DirectInferenceEngine extends AStar {
 		}			
 		
 		// Verifications
-		printEventPool();
-		
-		// Set of discovered nodes that needs to be evaluated
-		openSet = new PriorityQueue<AbstractNode>();
-		
-		// Hashmap remembering the previous node of the shortest path to get here
-	    cameFrom = new HashMap<AbstractNode, AbstractNode>();
-	    
-	    // For each node, the cost of getting from the start node to that node
-	    gScore = new HashMap<AbstractNode, Double>();
-	    
-	    // For each node, the total cost of getting from the start node to the goal
-	    fScore = new HashMap<AbstractNode, Double>();	
+		printEventPool();	
 	   	
 	    // Initializing the openSet
  		copy = new ArrayList<Clause>(knowledgeBase);
  		for (int i =0; i< copy.size(); i++){
  			Clause clause = copy.get(i);
- 			if (isInteresting(eventPool, clause)){
+ 			if (isInteresting(clause)){
  				ClauseNode newNode = new ClauseNode(clause);
  				
  				gScore.put(newNode, new Double(0));
@@ -83,29 +86,9 @@ public class DirectInferenceEngine extends AStar {
 	}
 
 	@Override
-	protected List<AbstractNode> reconstructPath(HashMap<AbstractNode, AbstractNode> cameFrom1, AbstractNode current) {
+	protected List<AbstractNode> reconstructPath(AbstractNode current) {
 		/* Not needed in that one */
 		return null;
-	}
-
-	@Override
-	protected void printAllLists(PriorityQueue<AbstractNode> _openSet, List<AbstractNode> _closedSet1) {
-		System.out.println("-------");
-		System.out.println("OpenSet: ");
-		for (int i = 0; i < _openSet.size(); i++){
-			System.out.println(_openSet.poll().getObject().toString());
-		}
-		System.out.println("-------");
-		System.out.println("ClosedSet: ");
-		for (int i = 0; i < _closedSet1.size(); i++){
-			System.out.println(_closedSet1.get(i).getObject().toString());
-		}
-		System.out.println("-------");
-		System.out.println("Knowledge base: ");
-		for (int i = 0; i < knowledgeBase.size(); i++){
-			knowledgeBase.get(i).print();
-		}
-		System.out.println("-------");		
 	}
 
 	@Override
@@ -115,9 +98,6 @@ public class DirectInferenceEngine extends AStar {
 		
 		Event event = _clause.getConclusion().getEvent();
 		boolean conclusionValue = _clause.getConclusion().getValue();
-		
-		// System.out.println("Finding children for clause: " + clauseNode.getClause().toString());
-		// System.out.println("Using the conclusion: " + event.toString());
 				
 		List<Clause> copy = new ArrayList<Clause>(knowledgeBase);
 		List<Clause> toDelete = new ArrayList<Clause>();
@@ -151,7 +131,7 @@ public class DirectInferenceEngine extends AStar {
 	@Override
 	protected double heuristic_cost_estimate(AbstractNode o1, AbstractNode goal) {
 		Clause clause = (Clause) o1.getObject();
-		return unknownElements(clause, eventPool);
+		return unknownElements(clause);
 	}
 
 	@Override
@@ -172,11 +152,11 @@ public class DirectInferenceEngine extends AStar {
     	// Checking if we are getting the goal
     	Clause goalClause = (Clause) goal.getObject();
 		String goalName = goalClause.getConclusion().getEvent().getName();
-    	// if (current.getClause().getConclusion().getEvent().getName().equals(goalName)){
+    	
     	if (getStatusOfEventFromtPool(goalName) == Status.TRUE){
     		cameFrom.put(goal, current);
     		System.out.println("We have our goal: " + goalClause.getConclusion().getEvent().getName());
-    		results = reconstructPath(cameFrom, goal);	    		
+    		results = reconstructPath(goal);	    		
     		// printAllLists(openSet, closedSet);
     		return true;
     	}
@@ -185,9 +165,18 @@ public class DirectInferenceEngine extends AStar {
 	
 	/* PRIVATE METHODS */
 	
-	private static boolean isInteresting(List<Event> trueSet, Clause clause){
+	/**
+	 * Function used in order to initialize the openSet. This function check if it would be 
+	 * interesting or not to add a given clause inside the openSet. 
+	 * An interesting clause is a clause that involves at least one single event in its 
+	 * condition events that is already inside the event pool.
+	 * 
+	 * @param clause - clause we want to check
+	 * @return boolean - true if the clause should be added to the closedSet, false if not.
+	 */
+	private static boolean isInteresting(Clause clause){
 		boolean interesting = false;
-		for(Iterator<Event> i = trueSet.iterator(); i.hasNext();) {
+		for(Iterator<Event> i = eventPool.iterator(); i.hasNext();) {
 			Event event = i.next();
 			for(Iterator<ClauseEvent> j = clause.getEvents().iterator(); j.hasNext();){
 				ClauseEvent clauseEvent = j.next();
@@ -206,10 +195,18 @@ public class DirectInferenceEngine extends AStar {
 		return interesting;
 	}
 	
+	/**
+	 * Function used in order to solve a clause. To solve one clause, we need to 
+	 * check the value of its condition events related to the event pool.
+	 * If a clause can be solved, then its result is added to the event pool.
+	 * 
+	 * @param current - current node containing the clause we want to solve
+	 */
 	private static void solveClause(AbstractNode current) {
 		Clause clause = (Clause) current.getObject();
-		if (unknownElements(clause, eventPool) == 0){
-			// To solve one clause, we need to check the value of its condition events related to the event pool
+		
+		if (unknownElements(clause) == 0){
+			// 
 			System.out.println("Clause " + clause.toString() + " is solvable");
 			
 			// Check if we should add the conclusion in the pool event
@@ -242,7 +239,28 @@ public class DirectInferenceEngine extends AStar {
 	}
 	
 	/**
-	 * Update the value of the fScore for all elements that are still in the openSet
+	 * Return the number of events that are still unknown
+	 * 
+	 * @param clause - clause we want to check
+	 */
+	private static int unknownElements(Clause clause){
+		int elements = 0;
+		for(int i = 0; i < clause.getEvents().size(); i++){
+			ClauseEvent clauseEvent = clause.getEvents().get(i);
+			
+			if (clauseEvent.getEvent().getStatus() == Status.UNKWON){
+				elements = elements + 1;
+			}
+		}
+		return elements;
+	}
+	
+	/**
+	 * Update the value of the fScore for all elements that are still in the openSet.
+	 * This function is used right after solving a new clause. In fact, if a clause has
+	 * been solved then the event pool has changed and the number of unknown elements for 
+	 * each clause of the openSet has also changed. We need so to update the fScore of 
+	 * each clause of the openSet.
 	 */	
 	private static void updateAllFCost() {
 		PriorityQueue<AbstractNode> updatedOpenSet = new PriorityQueue<AbstractNode>();
@@ -257,13 +275,18 @@ public class DirectInferenceEngine extends AStar {
 	}
 	
 	/**
-	 * Just because java wanted me to use a static method for the FScore update in 
-	 * updateAllFCost(), but I cannot put the heuristic method to static since it 
-	 * is at first an abstract method, so I had to make a copy of it
+	 * This function is implementing the heuristic using a static method.
+	 * 
+	 * This is just because java wants us to use a static method for the fScore update in 
+	 * updateAllFCost(), but the heuristic method cannot be turned to static since it 
+	 * is declared as an abstract method in {@link AStar}. 
+	 * This what we had to create a copy of the heuristic.
+	 * 
+	 * @param
 	 */
-	private static double staticHeuristicCost(AbstractNode o1){
-		Clause clause = (Clause) o1.getObject();
-		return unknownElements(clause, eventPool);
+	private static double staticHeuristicCost(AbstractNode node){
+		Clause clause = (Clause) node.getObject();
+		return unknownElements(clause);
 	}
 	
 	private static Status getStatusOfEventFromtPool(String description){
@@ -276,20 +299,7 @@ public class DirectInferenceEngine extends AStar {
 		return status;
 	}
 	
-	/**
-	 * Return the number of events that are still unknown
-	 */
-	private static int unknownElements(Clause clause, List<Event> trueSet){
-		int elements = 0;
-		for(int i = 0; i < clause.getEvents().size(); i++){
-			ClauseEvent clauseEvent = clause.getEvents().get(i);
-			
-			if (clauseEvent.getEvent().getStatus() == Status.UNKWON){
-				elements = elements + 1;
-			}
-		}
-		return elements;
-	}
+
 	
 	/* PRINTERS */
 	
@@ -305,10 +315,6 @@ public class DirectInferenceEngine extends AStar {
  					+ " - F: " + clauseNode.getFScore() 
  					+ " - G: " + clauseNode.getGScore());
  		}
- 		/*System.out.println("Clausal KB inside A Star after open set initialization: ");
- 		 for (int i = 0; i < knowledgeBase.size(); i++){
- 			knowledgeBase.get(i).print();
- 		} */
  		System.out.println();
 	}
 	
@@ -319,10 +325,6 @@ public class DirectInferenceEngine extends AStar {
 		for (int i = 0; i < eventPool.size(); i++){
 			eventPool.get(i).print();
 		}
-		/* System.out.println("Clausal KB inside A Star after true set initialization: ");
-		for (int i = 0; i < knowledgeBase.size(); i++){
-			knowledgeBase.get(i).print();
-		} */
+		System.out.println();
 	}
-
 }

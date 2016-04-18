@@ -2,12 +2,14 @@ package GenericAStar;
 import java.awt.Point;
 
 /**
- * Class defining nodes for the A* algorithm
+ * RoadNode is a class extending the {@link AbstractNode} class 
+ * in order to be able to use the end point of a {@link Road} element
+ * as a node inside the {@link PathFinding} class (which extends 
+ * {@link AStar}).
  * 
  * @author Quentin
  *
  */
-
 public class RoadNode extends AbstractNode {
 		
 	public RoadNode(Point point){

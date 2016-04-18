@@ -1,114 +1,39 @@
 package tests;
 
-import java.awt.Point;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import DirectInferenceEngine.Clause;
 import DirectInferenceEngine.ClauseEvent;
 import DirectInferenceEngine.Event;
+
 import GenericAStar.AbstractNode;
 import GenericAStar.ClauseNode;
 import GenericAStar.DirectInferenceEngine;
-import GenericAStar.MapInfo;
-import GenericAStar.PathFinding;
-import GenericAStar.RoadNode;
 
-/**
- * Unit test class for the methods creating the input from the resource text file.
- * 
- * @author Quentin
- *
- */
-public class testGenericAStar {
-
-	private static MapInfo map;
+@SuppressWarnings("unused")
+public class testGenericDirectInference {
 	
-	@BeforeClass
-	public static void loadMap(){
-		// Reading the map
-		map = new MapInfo();
-		String path = getPath();
-		System.out.println("Read: " + path);
-		map.readFromFile(path);		
-		System.out.println("Number of roads: " + map.getRoads().size());
-	}
-	
-	@Before
-	public void space(){
-		System.out.println("");
-		System.out.println("");
-	}
-	
-	@Test
-	public void testPathFinding1(){
-		System.out.println("--- PATHFINDING 1 ---");
-		System.out.println("");
-		
-		// Getting the start point and the goal point from the map
-		Point start = map.getCrossingByStreetNames("SktPedersStraede", "Larsbjoernsstraede");	
-		Point goal = map.getCrossingByStreetNames("Studiestraede", "Larsbjoernsstraede");
-		System.out.println("Request from: " + start + " to " + goal);
-			
-		// Start the A star algorithm
-		PathFinding search = new PathFinding(map);
-		RoadNode startNode = new RoadNode(start);
-		RoadNode goalNode = new RoadNode(goal);
-		List<AbstractNode> results = search.startAstar(startNode, goalNode);
-		
-		map.printResults(results);	
-		printCosts(results);
-	}
-		
-	@Test
-	public void testPathFinding2(){
-		System.out.println("--- PATHFINDING 2 ---");
-		System.out.println("");
-		
-		// Getting the start point and the goal point from the map
-		Point start = map.getCrossingByStreetNames("Noerregade", "Noerrevoldgade");	
-		Point goal = map.getCrossingByStreetNames("Studiestraede", "Vestervoldgade");
-		System.out.println("Request from: " + start + " to " + goal);
-			
-		// Start the A star algorithm
-		PathFinding search = new PathFinding(map);
-		RoadNode startNode = new RoadNode(start);
-		RoadNode goalNode = new RoadNode(goal);
-		List<AbstractNode> results = search.startAstar(startNode, goalNode);
-		
-		// map.printResults(results);	
-		printCosts(results);
-	}
-	
-	private static void printCosts(List<AbstractNode> results){
-		System.out.println("");
-		for (int i = 0; i < results.size(); i++){
-			System.out.println("Costs " + (i+1) 
-					+ " - G: " + results.get(i).getGScore() 
-					+ " - F: " + results.get(i).getFScore());
-		}
-	}
-	
-	private static String getPath(){
-	    String path = new File("src/resources/PathFindingDataSet.txt").getAbsolutePath();
-	    return path;
-	}
-	
-	/* TESTS FOR THE INFERENCE ENGINE */
-	
-	private List<Clause> knowledgeBase = new ArrayList<Clause>();
-	private List<Event> eventBase = new ArrayList<Event>();	
+	private List<Clause> knowledgeBase;
+	private List<Event> eventBase;	
 	private Event goalEvent;
 	
-	@SuppressWarnings("unused")
+	@Before
+	public void beforeTest(){
+		knowledgeBase = new ArrayList<Clause>();
+		eventBase = new ArrayList<Event>();	
+		goalEvent = null;
+		System.out.println();
+		System.out.println();
+	}
+	
 	@Test
-	public void testClause(){
-		
-		// Creating the event base
-		// CreateKnowledgeBase_Coffee();
+	public void testBreakfast(){	
+		System.out.println("--- BREAKFAST EXAMPLE ---");
+		System.out.println("");
 		CreateKnowledgeBase_Breakfast();
 		
 		// Printing the knowledge base
@@ -117,17 +42,40 @@ public class testGenericAStar {
 			knowledgeBase.get(i).print();
 		}
 		
-		// Start the A star algorithm
 		System.out.println();
 		System.out.println("Our goal is: " + goalEvent.getName());
-		DirectInferenceEngine search = new DirectInferenceEngine(knowledgeBase);
+				
 		ClauseEvent clauseEventGoal = new ClauseEvent(false, goalEvent);
 		ClauseNode goal = new ClauseNode(new Clause("Goal", clauseEventGoal));
-		List<AbstractNode> results = search.startAstar(null , goal); 
+		
+		DirectInferenceEngine search = new DirectInferenceEngine(knowledgeBase);
+		List<AbstractNode> results = search.start(null , goal); 
+	}
+	
+	@Test
+	public void testNespresso(){
+		System.out.println("--- NESPRESSO EXAMPLE ---");
+		System.out.println("");
+		CreateKnowledgeBase_Coffee();
+		
+		// Printing the knowledge base
+		System.out.println("Print clausal KB: ");
+		for (int i = 0; i < knowledgeBase.size(); i++){
+			knowledgeBase.get(i).print();
+		}
+		
+		System.out.println();
+		System.out.println("Our goal is: " + goalEvent.getName());
+		
+		ClauseEvent clauseEventGoal = new ClauseEvent(false, goalEvent);
+		ClauseNode goal = new ClauseNode(new Clause("Goal", clauseEventGoal));
+		
+		DirectInferenceEngine search = new DirectInferenceEngine(knowledgeBase);
+		List<AbstractNode> results = search.start(null , goal); 
 	}
 	
 	/**
-	 * Breakfast example from the lecture
+	 * Method used to create the knowledge base for the breakfast example
 	 */
 	private void CreateKnowledgeBase_Breakfast(){ 
 		
@@ -211,7 +159,7 @@ public class testGenericAStar {
 	}
 	
 	/**
-	 * Nespresso example from:
+	 * Method used to create the knowledge base for the Nespresso example from:
 	 * http://www.cs.toronto.edu/~sheila/2542/w06/readings/ijcai_pblr.pdf
 	 */
 	private void CreateKnowledgeBase_Coffee(){ 
@@ -329,4 +277,3 @@ public class testGenericAStar {
 		return new Clause(name, new ClauseEvent(status, event));
 	}
 }
-

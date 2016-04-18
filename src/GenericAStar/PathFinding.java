@@ -9,23 +9,37 @@ import java.util.PriorityQueue;
 import GenericAStar.MapInfo;
 import PathFinding.Road;
 
+/**
+ * This class is extending the {@link AStar} abstract class in order to 
+ * deal with {@link Road} objects. It is implementing a path finding algorithm
+ * based on tree structure and A* Algorithm.
+ * 
+ * In order to use this class, {@link RoadNode} should be used.
+ * 
+ * @author Quentin
+ *
+ */
+@SuppressWarnings("boxing")
 public class PathFinding extends AStar {
 
 	public PathFinding(MapInfo mapInfo) {
 		super(mapInfo);
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	protected void initializeSets(AbstractNode start, AbstractNode goal){
+		
+		// Initializing the openSet with the starting point
 		openSet = new PriorityQueue<AbstractNode>();
 		openSet.add(start);
 		
+		// Initializing the other sets as empty lists or hash maps
 		closedSet = new ArrayList<>();	
 		cameFrom = new HashMap<AbstractNode, AbstractNode>();	    
 	    gScore = new HashMap<AbstractNode, Double>();	    
 	    fScore = new HashMap<AbstractNode, Double>();
 	    
+	    // Setting the fCost and gCost of the starting point
 	    gScore.put(start, (double) 0);
     	fScore.put(start, heuristic_cost_estimate(start, goal));
     	start.setGScore(gScore.get(start));
@@ -33,13 +47,13 @@ public class PathFinding extends AStar {
 	}
 
 	@Override
-	protected List<AbstractNode> reconstructPath(HashMap<AbstractNode, AbstractNode> _cameFrom, AbstractNode current) {
+	protected List<AbstractNode> reconstructPath(AbstractNode current) {
 		System.out.println("Solution found - Reconstructing the path: ");
 		
 		List<AbstractNode> path = new ArrayList<AbstractNode>();
 		AbstractNode currentNode = current;
-		while (_cameFrom.getOrDefault(currentNode, null) != null){
-			AbstractNode previousNode = _cameFrom.get(currentNode);
+		while (cameFrom.getOrDefault(currentNode, null) != null){
+			AbstractNode previousNode = cameFrom.get(currentNode);
 			path.add(previousNode);
 			currentNode = previousNode;
 		}
@@ -48,26 +62,6 @@ public class PathFinding extends AStar {
 		Collections.reverse(path);		
 		
 		return path;
-	}
-	
-	@Override
-	protected void printAllLists(PriorityQueue<AbstractNode>  _openSet, List<AbstractNode> _closedSet){
-		/* System.out.println("-------");
-		System.out.println("OpenSet: ");
-		for (int i = 0; i < _openSet.size(); i++){
-			System.out.println(_openSet.poll().toString());
-		}
-		System.out.println("-------");
-		System.out.println("ClosedSet: ");
-		for (int i = 0; i < _closedSet.size(); i++){
-			System.out.println(_closedSet.get(i).toString());
-		}
-		System.out.println("-------");
-		System.out.println("Map base: ");
-		for (int i = 0; i < roads.size(); i++){
-			System.out.println(roads.get(i).toString());
-		}
-		System.out.println("-------"); */
 	}
 	
 	@Override
@@ -86,8 +80,8 @@ public class PathFinding extends AStar {
 	
 	@Override 
 	protected double dist_between(AbstractNode o1, AbstractNode o2){
-		java.awt.Point point1 = (java.awt.Point) o1.getObject();
-		java.awt.Point point2 = (java.awt.Point) o2.getObject();
+		Point point1 = (Point) o1.getObject();
+		Point point2 = (Point) o2.getObject();
 		double dist = point1.getLocation().distance(point2);
 		if (dist < 0)
 			return -dist;
@@ -98,18 +92,20 @@ public class PathFinding extends AStar {
 	protected double heuristic_cost_estimate(AbstractNode o1, AbstractNode goal){
 		Point point1 = (Point) o1.getObject();
 		Point point2 = (Point) goal.getObject();
-		return point1.distance(point2);	
+		double dist = point1.getLocation().distance(point2);
+		if (dist < 0)
+			return -dist;
+		return dist;
 	}
 
 	@Override
 	protected boolean goalChecking(AbstractNode current, AbstractNode goal){
-    	// Checking if we are getting the goal
     	if (current.getObject().equals(goal.getObject())){
     		cameFrom.put(goal, current);
-    		results = reconstructPath(cameFrom, goal);
-    		printAllLists(openSet, closedSet);
+    		results = reconstructPath(goal);
+    		printAllLists();
     		return true;
-    	}
+    	}   	
     	return false;
 	}
 }

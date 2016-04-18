@@ -4,14 +4,25 @@ import java.util.*;
 import DirectInferenceEngine.Clause;
 import GenericAStar.MapInfo;
 
-	/**
- * A* algorithm based on the uniform A Star algorithm pseudo code described on:
+/**
+ * This class is an abstract class providing the basis of an A* Algorithm
+ * and a set of methods that should be overridden in some new classes.
+ * 
+ * The class relies on a tree structure based on the {@link AbstractNode} class.
+ * The class is able to deal with cost estimations using the variables fScore and gScore. 
+ * fScore is the estimation of the future cost based on heuristic estimations. 
+ * gScore is the previous cost needed to reach until the current node.
+ * 
+ * The A* algorithm based on the uniform A Star algorithm pseudo code described on:
  * https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode 
  * 
  * @author Quentin
  *
  */
+@SuppressWarnings({ "unchecked", "rawtypes", "boxing" })
 public abstract class AStar{	
+	
+	/** Class members **/
 	
 	// List of roads specific to the PathFinging 	
 	protected static List<Object> roads;
@@ -37,7 +48,13 @@ public abstract class AStar{
 	// List of nodes as result of the solving algorithm
 	protected static List<AbstractNode> results;
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	/** Constructor **/
+	
+	/**
+	 * Constructor used in order to initialize the A Star Algorithm by providing the
+	 * data base to perform treatments on.
+	 * @param data - data base 
+	 */
 	public AStar(Object data){
 		// Creating a copy of the list of the inputs in order to delete some without consequences
 		if (data instanceof MapInfo){
@@ -49,9 +66,16 @@ public abstract class AStar{
 			knowledgeBase = new ArrayList<Clause>(clauses);
 		}
 	}
-
-	@SuppressWarnings("boxing")
-	public List<AbstractNode> startAstar(AbstractNode start, AbstractNode goal){
+	
+	/** Public method **/
+	
+	/**
+	 * Function used in order to start the A Star algorithm.
+	 * @param start - starting node to perform computations on
+	 * @param goal - goal we want to reach using A star
+	 * @return List of nodes to follow to reach the goal node from the starting node
+	 */
+	public List<AbstractNode> start(AbstractNode start, AbstractNode goal){
 		System.out.println("");
 		System.out.println("Start of A star Algorithm");
 		
@@ -126,17 +150,89 @@ public abstract class AStar{
 	    return results; 
 	}
 	
-	protected abstract boolean goalChecking(AbstractNode current, AbstractNode goal);
+	/** Abstract methods **/
 
+	/**
+	 * Function used in order to initialize all class variable considering the starting
+	 * point of the algorithm (if there is explicitly one) and the goal.
+	 * 
+	 * @param start - input of the algorithm
+	 * @param goal - goal we want to reach using A star
+	 */
 	protected abstract void initializeSets(AbstractNode start, AbstractNode goal);
-
-	protected abstract List<AbstractNode> reconstructPath(HashMap<AbstractNode, AbstractNode> _cameFrom, AbstractNode current);
 	
-	protected abstract void printAllLists(PriorityQueue<AbstractNode>  _openSet, List<AbstractNode> _closedSet);
+	/**
+	 * Function used to perform some treatments on the current node in order to check 
+	 * if it this node has helped us to get the goal of the algorithm.
+	 * 
+	 * @param current - current node the algorithm is dealing with
+	 * @param goal - goal that we want to reach using A star
+	 * @return boolean - true if the algorithm has reached the goal, false if it has not
+	 */
+	protected abstract boolean goalChecking(AbstractNode current, AbstractNode goal);
 	
+	/**
+	 * Function used to recreate the path to follow in order to reach the goal. 
+	 * This function is used after the goal has been found in the algorithm and is based 
+	 * on the cameFrom hashMap.
+	 * 
+	 * @param current - current node the algorithm is dealing with 
+	 * @return List of nodes to follow to reach the goal node from the starting node
+	 */
+	protected abstract List<AbstractNode> reconstructPath(AbstractNode current);
+	
+	/**
+	 * This function is used to construct the tree structure of the A Star algorithm.
+	 * This function is used in order to find the possible node children among the object
+	 * set given as input to the algorithm in the method startAStar.
+	 * 
+	 * @param node
+	 */
 	protected abstract void findChildren(AbstractNode node);
 	
-	protected abstract double dist_between(AbstractNode o1, AbstractNode o2);
+	/**
+	 * This function is used in order to set the value of the gScore function inside the 
+	 * main loop of the A star algorithm. It computes the distance between two nodes given 
+	 * as input.
+	 * 
+	 * @param node1 - first node
+	 * @param node2 - second node
+	 * @return double - distance between the two nodes
+	 */
+	protected abstract double dist_between(AbstractNode node1, AbstractNode node2);
 	
-	protected abstract double heuristic_cost_estimate(AbstractNode o1, AbstractNode goal);
+	/**
+	 * Heuristic function used to estimate the future cost (fCost) between the current node 
+	 * we are dealing with and the goal node.
+	 * 
+	 * @param current - current node the algorithm is dealing with 
+	 * @param goal - goal we want to reach using A star
+	 * @return double - future cost estimation of the current node
+	 */
+	protected abstract double heuristic_cost_estimate(AbstractNode node, AbstractNode goal);
+	
+	/** Printers **/
+	
+	/**
+	 * Function used in order to print the openSet, closedSet and input base. Mainly used for
+	 * development and debugging purposes.
+	 */
+	protected void printAllLists() {
+		System.out.println("-------");
+		System.out.println("OpenSet: ");
+		for (int i = 0; i < openSet.size(); i++){
+			System.out.println(openSet.poll().getObject().toString());
+		}
+		System.out.println("-------");
+		System.out.println("ClosedSet: ");
+		for (int i = 0; i < closedSet.size(); i++){
+			System.out.println(closedSet.get(i).getObject().toString());
+		}
+		System.out.println("-------");
+		System.out.println("Knowledge base: ");
+		for (int i = 0; i < knowledgeBase.size(); i++){
+			knowledgeBase.get(i).print();
+		}
+		System.out.println("-------");		
+	}
 }
