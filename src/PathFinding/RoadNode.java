@@ -2,6 +2,8 @@ package PathFinding;
 
 import java.awt.Point;
 
+import PathFinding.Node;
+
 /**
  * Class defining nodes for the A* algorithm
  * 

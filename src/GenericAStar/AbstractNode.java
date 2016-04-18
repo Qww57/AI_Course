@@ -1,21 +1,17 @@
-package PathFinding;
+package GenericAStar;
 
-
-import java.awt.Point;
 import java.util.PriorityQueue;
 
-public abstract class Node implements Comparable<Node>{
+public abstract class AbstractNode implements Comparable<AbstractNode>{
 
-	/* TODO refactor to use here a type Object that will change 
-	 * depending on the implementing class */
-	protected Point _position;
-	protected PriorityQueue<Node> _frontier;
-	protected Node _parent;
+	protected Object _object;
+	protected PriorityQueue<AbstractNode> _frontier;
+	protected AbstractNode _parent;
 	public double _gScore;
 	protected double _fScore;
 	
-	public Node(Point position){
-		this._position = position;
+	public AbstractNode(Object object){
+		this._object = object;
 		_frontier = new PriorityQueue<>();
 	}
 	
@@ -27,23 +23,27 @@ public abstract class Node implements Comparable<Node>{
 		return _fScore;
 	}
 	
-	public PriorityQueue<Node> getChildren(){
+	public PriorityQueue<AbstractNode> getChildren(){
 		return _frontier;
 	}
 	
-	public void addChild(Node child){
+	public void addChild(AbstractNode child){
 		if (!_frontier.contains(child))
 			_frontier.add(child);
 		else 
 			System.out.println("Child already in the frontier");
 	}
 	
-	public void setParent(Node parent){
+	public void setParent(AbstractNode parent){
 		_parent = parent;
 	}
 	
-	public Point getPosition() {
-		return _position;
+	public AbstractNode getParent(){
+		return _parent;
+	}
+	
+	public Object getObject() {
+		return _object;
 	}
 	
 	public void setFScore(double fScore){

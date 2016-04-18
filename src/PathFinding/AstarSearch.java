@@ -2,6 +2,8 @@ package PathFinding;
 
 import java.util.*;
 
+import PathFinding.Node;
+
 /**
  * A* algorithm based on the uniform A Star algorithm pseudo code described on:
  * https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode 
@@ -67,15 +69,15 @@ public class AstarSearch {
 	    // For each node, estimation of going from this node to the goal using the heuristic
 	    HashMap<Node, Distance> fScore = new HashMap<Node, Distance>();
 	    
+	    gScore.put(start, new Distance(0));
+    	fScore.put(start, new Distance (heuristic_cost_estimate(start, goal)));
+    	start.setGScore(gScore.get(start).getDistance());
+    	start.setFScore(fScore.get(start).getDistance());
+	    
 	    while (!openSet.isEmpty()){
 	    	// Get first node from openSet using the comparable from the node
 	    	Node current = openSet.poll();
-	    	
-	    	gScore.put(current, new Distance(0));
-	    	fScore.put(current, new Distance (heuristic_cost_estimate(start, goal)));
-	    	start.setFScore(fScore.get(current).getDistance());
-	 	    start.setGScore(gScore.get(current).getDistance());
-	    		 
+	    		    		 
 	    	// Checking if we are getting the goal
 	    	if (current.getPosition().equals(goal.getPosition())){
 	    		cameFrom.put(goal, current);

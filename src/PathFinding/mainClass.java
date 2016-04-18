@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.File;
 import java.util.List;
 
+import PathFinding.Node;
 import PathFinding.AstarSearch.Heuristic;
 import PathFinding.AstarSearch.Type;
 

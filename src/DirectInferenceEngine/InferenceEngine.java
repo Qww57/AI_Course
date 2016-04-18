@@ -13,15 +13,13 @@ public class InferenceEngine {
 			
 	private static List<Node> results;
 	private static List<Clause> knowledgeBase = new ArrayList<Clause>();
-	private static List<Event> eventBase = new ArrayList<Event>();
 	private static List<Event> eventPool = new ArrayList<Event>();
 	private static HashMap<Node, Integer> fScore = new HashMap<Node, Integer>();
 	private static PriorityQueue<Node> openSet = new PriorityQueue<Node>();
 	
-	public InferenceEngine(List<Clause> kBase, List<Event> eBase){
-		// Creating a copy of the list of roads in order to delete some without consequences
+	public InferenceEngine(List<Clause> kBase){
+		// Creating a copy of the list of clauses in order to delete some without consequences
 		knowledgeBase = new ArrayList<Clause>(kBase);
-		eventBase = new ArrayList<Event>(eBase);
 	}
 	
 	public List<Node> startAstar(Node goal){
@@ -109,7 +107,7 @@ public class InferenceEngine {
 	    	if (getStatusOfEventFromtPool(goalName) == Status.TRUE){
 	    		cameFrom.put(goal, current);
 	    		System.out.println("We have our goal: " + goal.getClause().getConclusion().getEvent().getName());
-	    		// results = reconstructPath(cameFrom, goal);	    		
+	    		results = reconstructPath(cameFrom, goal);	    		
 	    		// printAllLists(openSet, closedSet);
 	    		break;
 	    	}
@@ -172,7 +170,6 @@ public class InferenceEngine {
 	    return results; 
 	}
 	
-	// DONE
 	private static void solveClause(Node current) {
 		if (unknownElements(current.getClause(), eventPool) == 0){
 			// To solve one clause, we need to check the value of its condition events related to the event pool
@@ -209,8 +206,7 @@ public class InferenceEngine {
 	
 	/**
 	 * Update the value of the fScore for all elements that are still in the openSet
-	 */
-	
+	 */	
 	private static void updateAllFCost() {
 		PriorityQueue<Node> updatedOpenSet = new PriorityQueue<Node>();
 		while(!openSet.isEmpty()){
@@ -222,8 +218,6 @@ public class InferenceEngine {
 		openSet = updatedOpenSet;
 	}
 	
-
-	// DONE
 	private static Status getStatusOfEventFromtPool(String description){
 		Status status = Status.UNKWON;
 		for (int i = 0; i < eventPool.size(); i++ ){
@@ -233,8 +227,6 @@ public class InferenceEngine {
 		}
 		return status;
 	}
-	
-	// DONE
 	
 	private static List<Node> reconstructPath(HashMap<Node, Node> cameFrom, Node current){
 		System.out.println("");
@@ -258,8 +250,6 @@ public class InferenceEngine {
 		return path;
 	}
 	
-	
-	// DONE
 	private static boolean isInteresting(List<Event> trueSet, Clause clause){
 		boolean interesting = false;
 		for(Iterator<Event> i = trueSet.iterator(); i.hasNext();) {
@@ -281,8 +271,6 @@ public class InferenceEngine {
 		return interesting;
 	}
 	
-	
-	// DONE
 	/**
 	 * Return the number of events that are still unknown
 	 */
@@ -297,8 +285,6 @@ public class InferenceEngine {
 		}
 		return elements;
 	}
-	
-	// DONE
 	
 	/**
 	 * Children of a node are the clause from the knowledgeBase 

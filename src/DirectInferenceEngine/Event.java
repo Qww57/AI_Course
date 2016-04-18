@@ -2,7 +2,7 @@ package DirectInferenceEngine;
 
 public class Event {
 
-	enum Status {
+	public enum Status {
 		TRUE,
 		FALSE,
 		UNKWON
