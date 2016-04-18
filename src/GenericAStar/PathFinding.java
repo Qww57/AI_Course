@@ -83,8 +83,6 @@ public class PathFinding extends AStar {
 		Point point1 = (Point) o1.getObject();
 		Point point2 = (Point) o2.getObject();
 		double dist = point1.getLocation().distance(point2);
-		if (dist < 0)
-			return -dist;
 		return dist;
 	}
 	
@@ -93,8 +91,6 @@ public class PathFinding extends AStar {
 		Point point1 = (Point) o1.getObject();
 		Point point2 = (Point) goal.getObject();
 		double dist = point1.getLocation().distance(point2);
-		if (dist < 0)
-			return -dist;
 		return dist;
 	}
 

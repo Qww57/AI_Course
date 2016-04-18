@@ -4,19 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * If events at least one clause event from the condition events is satisfied
- * then the conclusion event is obtained.
+ * A {@link Clause} is the representation of an implication as a clausal form.
+ * It means that each clause is composed of a set of {@link Event}s linked 
+ * together by or relations. Since some of the basic {@link Event}s can be denied, 
+ * the clause is composed of {@link ClauseEvent} a structure that enable the 
+ * negation of one {@link Event}.
+ * 
+ * Since a clause is, at first, an implication (for instance "a and no b implies c",
+ * when translating it to a clausal form, we have then "no a or b or c").
+ * We can so split the {@link ClauseEvent} composing it in two different types.
+ * On the one hand, the conditional ClauseEvents (here, "no a" and "b") and the 
+ * conclusion event (here "c").
+ * 
+ * An interesting thing with clause is that, in order to solve the clause (which 
+ * means to have its ClauseEvent), we only need to have one of the {@link ClauseEvent}
+ * satisfied.
  * 
  * @author Quentin
  *
  */
 public class Clause {
+	
+	/** Class members **/
 
 	private String clauseID;
 
 	private List<ClauseEvent> events;
 	
 	private ClauseEvent conclusion;
+	
+	/** Constructors **/
 	
 	public Clause(String clauseID, List<ClauseEvent> events, ClauseEvent conclusion) {
 		super();
@@ -32,6 +49,8 @@ public class Clause {
 		this.conclusion = conclusion;
 	}
 
+	/** Getters and setters **/
+	
 	public synchronized String getClauseID() {
 		return clauseID;
 	}

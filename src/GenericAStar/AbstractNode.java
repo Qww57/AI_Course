@@ -50,8 +50,6 @@ public abstract class AbstractNode implements Comparable<AbstractNode>{
 	public void addChild(AbstractNode child){
 		if (!_children.contains(child))
 			_children.add(child);
-		else 
-			System.out.println("Child already in the frontier");
 	}
 	
 	public void setParent(AbstractNode parent){
