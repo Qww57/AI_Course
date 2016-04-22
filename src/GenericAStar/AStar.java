@@ -86,9 +86,7 @@ public abstract class AStar{
 		initializeSets(start, goal);
 	    int counter = 1;
 		System.out.println("Starting the loop");
-	    while (!openSet.isEmpty()){
-	    	
-	    	// printOpenSet(openSet);
+	    while (!openSet.isEmpty()){    	
 	    	
 	    	// Get first node from openSet using the comparable from the node
 	    	AbstractNode current = openSet.poll();
@@ -245,24 +243,5 @@ public abstract class AStar{
 			knowledgeBase.get(i).print();
 		}
 		System.out.println("-------");		
-	}
-	
-	/**
-	 * TO REMOVE
-	 * @param openSet1
-	 */
-	private static void printOpenSet(PriorityQueue<AbstractNode> openSet1){
- 		System.out.println();
- 		System.out.println("--- Verifications for the openSet ---");
- 		System.out.println("Size of the initial open set: " + openSet1.size());
- 		Object[] openSetArray = openSet1.toArray();
- 		for (int i = 0; i < openSetArray.length; i++){
- 			ClauseNode clauseNode = (ClauseNode) openSetArray[i];
- 			Clause clause = (Clause) clauseNode.getObject();
- 			System.out.println(clause.toString() 
- 					+ " - F: " + clauseNode.getFScore() 
- 					+ " - G: " + clauseNode.getGScore());
- 		}
- 		System.out.println();
 	}
 }

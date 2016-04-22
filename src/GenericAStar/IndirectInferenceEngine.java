@@ -94,9 +94,6 @@ public class IndirectInferenceEngine extends AStar {
  		printOpenSet();
 	}
 
-	/**
-	 * DONE
-	 */
 	@Override
 	protected boolean goalChecking(AbstractNode current, AbstractNode goal) {
 		gScore.put(current, new Double(0));
@@ -110,88 +107,14 @@ public class IndirectInferenceEngine extends AStar {
     	Clause startingClause = ((Clause) startingPoint.getObject());
 		if (startingClause.getConclusion() == null && startingClause.getEvents().size() == 0){
     		cameFrom.put(goal, current);
-    		System.out.println("We have have an empty clause, so we have our goal");
-    		// results = reconstructPath(negate(goal));	    		
+    		// We negate the goal again, just in order to print it
+    		negate(goal);
+    		System.out.println("We have have an empty clause, so we have our goal: " 
+    				+ ((Clause) goal.getObject()).toString()); 
     		return true;
     	}
     	return false;
 	}
-
-	/**
-	 * Something to fix, see with the tea problem 
-	 * 
-	 * @param current
-	 * @return
-	 */
-	private static ClauseNode solveClause(ClauseNode current) {
-		Clause clause = (Clause) current.getObject();
-		
-		if (negatedElements(clause) != 0){
-			
-			// Copying data in order to handle them
-			List<ClauseEvent> startingEvents = ((Clause) startingPoint.getObject()).getEvents();
-			List<ClauseEvent> copyStartingClause = new ArrayList<ClauseEvent>(startingEvents);			
-			List<ClauseEvent> copyClauseEvents = new ArrayList<ClauseEvent>(clause.getEvents());
-			
-			// Elements to delete, if they are both in clauses
-			for (int j = 0; j < startingEvents.size(); j++){
-				
-				for (int i = 0; i < clause.getEvents().size(); i++){				
-				
-					//TODO see why never true
-					if (clause.getEvents().get(i).getEvent().getName() == startingEvents.get(j).getEvent().getName()
-							&& clause.getEvents().get(i).getValue() != startingEvents.get(j).getValue()){
-						copyStartingClause.remove(clause.getEvents().get(j));
-						copyClauseEvents.remove(clause.getEvents().get(i));
-					}
-					
-					// If in conclusion of current and events of starting clause
-					if (clause.getConclusion().getEvent().getName() == startingEvents.get(j).getEvent().getName()
-							&& clause.getConclusion().getValue() != startingEvents.get(j).getValue()){
-						copyStartingClause.remove(startingEvents.get(j));
-					}
-				}			
-			}
-			
-			// Creating the output clause
-			List<ClauseEvent> newSPEvents = new ArrayList<ClauseEvent>();
-			newSPEvents.addAll(copyStartingClause);
-			newSPEvents.addAll(copyClauseEvents);
-			ClauseNode newSP = new ClauseNode(new Clause("Goal", newSPEvents, null));
-			
-			System.out.println("Solved: " + newSP.toString());
-			
-			updateAllFCost();
-			
-			return newSP;
-		}
-		System.out.println("No solving: " + startingPoint.toString());
-		return startingPoint;
-	}
-	
-	private static void updateAllFCost() {
-		PriorityQueue<AbstractNode> updatedOpenSet = new PriorityQueue<AbstractNode>();
-		while(!openSet.isEmpty()){
-			ClauseNode current = (ClauseNode) openSet.poll();
-			
-			double newFScore = staticHeuristicCost(current);
-			fScore.put(current, new Double(newFScore));
-			current.setFScore(newFScore);
-			
-			updatedOpenSet.add(current);
-		}
-		openSet = updatedOpenSet;
-	}
-	
-	protected static double staticHeuristicCost(AbstractNode node) {		
-		double factor1 = unknownElements(((Clause) node.getObject()));
-		double factor2 = negatedElements(((Clause) node.getObject()));
-		double factor3 = numberElements(((Clause) node.getObject()));
-		double score = factor1 * 100 + factor2 * 10 + factor3;
-		System.out.println("Computing heuristic for " + node.toString() + " : " + score);
-		return score; 
-	}
-	
 
 	@Override
 	protected List<AbstractNode> reconstructPath(AbstractNode current) {
@@ -199,9 +122,6 @@ public class IndirectInferenceEngine extends AStar {
 		return null;
 	}
 
-	/**
-	 * Children, if one of the elements is the negation inside
-	 */
 	@Override
 	protected void findChildren(AbstractNode node) {
 		
@@ -234,7 +154,7 @@ public class IndirectInferenceEngine extends AStar {
 				}
 				
 				if (childFound == true){
-					System.out.println("Child found " + clause.toString());
+					// System.out.println("Child found " + clause.toString());
 					ClauseNode child = new ClauseNode(clause);
 					child.setParent(node);
 					node.addChild(child);					
@@ -253,9 +173,10 @@ public class IndirectInferenceEngine extends AStar {
 	}
 
 	/**
-	 * Low number of unknown elements inside the checked clause 
-	 * number of elements of the startingPoint that are negated inside the current node
-	 * number of elements inside the checked clause
+	 * The heuristic function is dealing with the following three parameters:
+	 * - Number of unknown elements inside the checked clause 
+	 * - Number of elements of the startingPoint that are negated inside the current node
+	 * - Number of elements inside the checked clause
 	 */
 	@Override
 	protected double heuristic_cost_estimate(AbstractNode node, AbstractNode goal) {		
@@ -267,6 +188,32 @@ public class IndirectInferenceEngine extends AStar {
 		return score; 
 	}
 	
+	/* PRIVATE METHODS */
+	
+	/**
+	 * This function is implementing the heuristic using a static method.
+	 * 
+	 * This is just because java wants us to use a static method for the fScore update in 
+	 * updateAllFCost(), but the heuristic method cannot be turned to static since it 
+	 * is declared as an abstract method in {@link AStar}. 
+	 * This what we had to create a copy of the heuristic.
+	 * 
+	 * @param
+	 */
+	private static double staticHeuristicCost(AbstractNode node) {		
+		double factor1 = unknownElements(((Clause) node.getObject()));
+		double factor2 = negatedElements(((Clause) node.getObject()));
+		double factor3 = numberElements(((Clause) node.getObject()));
+		double score = factor1 * 100 + factor2 * 10 + factor3;
+		return score; 
+	}
+	
+	/**
+	 * Return the number of events that are still unknown
+	 * 
+	 * @param clause - clause we want to check
+	 * @return int - number of unknown elements
+	 */
 	private static int unknownElements(Clause clause){
 		int elements = 0;
 		for(int i = 0; i < clause.getEvents().size(); i++){
@@ -282,6 +229,12 @@ public class IndirectInferenceEngine extends AStar {
 		return elements;
 	}
 	
+	/**
+	 * Return the number of elements inside a clause
+	 * 
+	 * @param clause - clause we want to check
+	 * @return int - number of elements
+	 */
 	private static double numberElements(Clause clause) {
 		double events = clause.getEvents().size();
 		if (clause.getConclusion() != null){
@@ -290,6 +243,13 @@ public class IndirectInferenceEngine extends AStar {
 		return events;
 	}
 
+	/**
+	 * Return the number of elements inside the clause that are negating 
+	 * elements from our startingClause
+	 * 
+	 * @param clause - clause we want to check
+	 * @return int - number of elements negating the ones of the startingClause
+	 */
 	private static double negatedElements(Clause clause) {
 		double negation = 0;
 		Clause startingClause = ((Clause) startingPoint.getObject());
@@ -315,6 +275,85 @@ public class IndirectInferenceEngine extends AStar {
 		return negation;
 	}
 
+	/**
+	 * Solving a clause. This function is merging the clause from the current node 
+	 * and the one we are dealing with through the whole algorithm. It also removes
+	 * the elements that are present with and without negation (for instance, 
+	 * 
+	 * 
+	 * @param current
+	 * @return
+	 */
+	private static ClauseNode solveClause(ClauseNode current) {
+		Clause clause = (Clause) current.getObject();
+		
+		if (negatedElements(clause) != 0){
+			
+			// Copying data in order to handle them
+			List<ClauseEvent> startingEvents = ((Clause) startingPoint.getObject()).getEvents();
+			List<ClauseEvent> copyStartingClause = new ArrayList<ClauseEvent>(startingEvents);			
+			List<ClauseEvent> copyClauseEvents = new ArrayList<ClauseEvent>(clause.getEvents());
+			
+			// Elements to delete, if they are both in clauses
+			for (int j = 0; j < startingEvents.size(); j++){
+				
+				ClauseEvent startingEvent = startingEvents.get(j);
+				Event event = startingEvent.getEvent();
+				boolean eventStatus = startingEvent.getValue();
+				
+				for (int i = 0; i < clause.getEvents().size(); i++){				
+				
+					ClauseEvent tmpClauseEvent = clause.getEvents().get(i);				
+					if (tmpClauseEvent.getEvent().getName() == event.getName() 
+							&& tmpClauseEvent.getValue() != eventStatus){
+						copyStartingClause.remove(startingEvents.get(j));
+						copyClauseEvents.remove(clause.getEvents().get(i));
+					}
+				}
+				
+				// If in conclusion of current and events of starting clause
+				if (clause.getConclusion().getEvent().getName() == event.getName()
+						&& clause.getConclusion().getValue() != eventStatus){
+					copyStartingClause.remove(startingEvents.get(j));
+				}
+			}
+			
+			// Creating the output clause
+			List<ClauseEvent> newSPEvents = new ArrayList<ClauseEvent>();
+			newSPEvents.addAll(copyStartingClause);
+			newSPEvents.addAll(copyClauseEvents);
+			ClauseNode newSP = new ClauseNode(new Clause("Goal", newSPEvents, null));
+			
+			System.out.println("Solved: " + newSP.toString());
+			
+			updateAllFCost();
+			
+			return newSP;
+		}
+		System.out.println("No solving: " + startingPoint.toString());
+		return startingPoint;
+	}
+	
+	/**
+	 * Update the value of the fScore for all elements that are still in the openSet.
+	 * This function is used right after solving a new clause. In fact, if we can solve the 
+	 * clause of the current node with the starting clause we had, then we have to update 
+	 * all the fCosts.
+	 */	
+	private static void updateAllFCost() {
+		PriorityQueue<AbstractNode> updatedOpenSet = new PriorityQueue<AbstractNode>();
+		while(!openSet.isEmpty()){
+			ClauseNode current = (ClauseNode) openSet.poll();
+			
+			double newFScore = staticHeuristicCost(current);
+			fScore.put(current, new Double(newFScore));
+			current.setFScore(newFScore);
+			
+			updatedOpenSet.add(current);
+		}
+		openSet = updatedOpenSet;
+	}
+	
 	/**
 	 * Negates and move it inside of the condition inside of the events
 	 * 
@@ -353,9 +392,8 @@ public class IndirectInferenceEngine extends AStar {
 		return interesting;
 	}
 	
-	/**
-	 * SAME AS IN DIRECT
-	 */
+	/* PRINTERS */
+	
 	private static void printOpenSet(){
  		System.out.println();
  		System.out.println("--- Verifications for the openSet ---");

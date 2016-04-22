@@ -256,6 +256,7 @@ public class DirectInferenceEngine extends AStar {
 	 * Return the number of events that are still unknown
 	 * 
 	 * @param clause - clause we want to check
+	 * @return int - number of unknown elements
 	 */
 	private static int unknownElements(Clause clause){
 		int elements = 0;
@@ -298,7 +299,8 @@ public class DirectInferenceEngine extends AStar {
 	 * is declared as an abstract method in {@link AStar}. 
 	 * This what we had to create a copy of the heuristic.
 	 * 
-	 * @param
+	 * @param node - current node we are dealing with
+	 * @return double - estimated cost
 	 */
 	private static double staticHeuristicCost(AbstractNode node){
 		Clause clause = (Clause) node.getObject();
@@ -306,10 +308,10 @@ public class DirectInferenceEngine extends AStar {
 	}
 	
 	/**
-	 * TODO description
+	 * Helper function that get the status of a specific event inside the eventPool
 	 * 
-	 * @param description
-	 * @return
+	 * @param description - name of the event we want to check
+	 * @return status of the event, or unkown if not available
 	 */
 	private static Status getStatusOfEventFromtPool(String description){
 		Status status = Status.UNKWON;
@@ -320,9 +322,7 @@ public class DirectInferenceEngine extends AStar {
 		}
 		return status;
 	}
-	
-
-	
+		
 	/* PRINTERS */
 	
 	private static void printOpenSet(PriorityQueue<AbstractNode> openSet1){

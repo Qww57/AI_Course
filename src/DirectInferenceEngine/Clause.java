@@ -77,19 +77,32 @@ public class Clause {
 	
 	public String toString(){
 		String condition = "";
-		if (events.size() != 0){
-			for (int i = 0; i < events.size(); i++){
-				if (i < events.size()){
-					if (events.get(i).getValue() == false)
-						condition += "no ";
-					condition += events.get(i).getEvent().getName() + " or ";
-				}
-			}
-		}
 		if (conclusion != null){
+			if (events.size() != 0){
+				for (int i = 0; i < events.size(); i++){
+					if (i < events.size()){
+						if (events.get(i).getValue() == false)
+							condition += "no ";
+						condition += events.get(i).getEvent().getName() + " or ";
+					}
+				}
+			}	
 			if (conclusion.getValue() == false)
 				condition += "no ";		
+			
 			condition += conclusion.getEvent().getName();
+		}
+		else {
+			if (events.size() != 0){
+				for (int i = 0; i < events.size()-1; i++){
+					if (i < events.size()){
+						if (events.get(i).getValue() == false)
+							condition += "no ";
+						condition += events.get(i).getEvent().getName() + " or ";
+					}
+				}
+				condition += events.get(events.size()-1).getEvent().getName();
+			}	
 		}
 		return clauseID + " - " + condition;
 	}
