@@ -86,10 +86,11 @@ public class Clause {
 				}
 			}
 		}
-		if (conclusion.getValue() == false)
-			condition += "no ";		
-		condition += conclusion.getEvent().getName();
-			
+		if (conclusion != null){
+			if (conclusion.getValue() == false)
+				condition += "no ";		
+			condition += conclusion.getEvent().getName();
+		}
 		return clauseID + " - " + condition;
 	}
 	

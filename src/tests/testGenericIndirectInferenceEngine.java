@@ -12,17 +12,17 @@ import DirectInferenceEngine.Event;
 
 import GenericAStar.AbstractNode;
 import GenericAStar.ClauseNode;
-import GenericAStar.DirectInferenceEngine;
+import GenericAStar.IndirectInferenceEngine;
 
 /**
- * Test file that tests the {@link DirectInferenceEngine} based on the {@link AStar}
+ * Test file that tests the {@link IndirectInferenceEngine} based on the {@link AStar}
  * algorithm with two examples. 
  * 
  * @author Quentin
  *
  */
 @SuppressWarnings("unused")
-public class testGenericDirectInference {
+public class testGenericIndirectInferenceEngine {
 	
 	private List<Clause> knowledgeBase;
 	private List<Event> eventBase;	
@@ -50,15 +50,16 @@ public class testGenericDirectInference {
 		}
 		
 		System.out.println();
+		System.out.println("Our goal is: " + goalEvent.getName());
+				
 		ClauseEvent clauseEventGoal = new ClauseEvent(true, goalEvent);
 		ClauseNode goal = new ClauseNode(new Clause("Goal", clauseEventGoal));
-		System.out.println("Our goal clause is: " + goal.getObject().toString());
 		
-		DirectInferenceEngine search = new DirectInferenceEngine(knowledgeBase);
+		IndirectInferenceEngine search = new IndirectInferenceEngine(knowledgeBase);
 		List<AbstractNode> results = search.start(null , goal); 
 	}
 	
-	@Test
+	//@Test
 	public void testNespresso(){
 		System.out.println("--- NESPRESSO EXAMPLE ---");
 		System.out.println("");
@@ -71,11 +72,12 @@ public class testGenericDirectInference {
 		}
 		
 		System.out.println();
-		ClauseEvent clauseEventGoal = new ClauseEvent(true, goalEvent);
-		ClauseNode goal = new ClauseNode(new Clause("Goal", clauseEventGoal));
-		System.out.println("Our goal clause is: " + goal.getObject().toString());
+		System.out.println("Our goal is: " + goalEvent.getName());
 		
-		DirectInferenceEngine search = new DirectInferenceEngine(knowledgeBase);
+		ClauseEvent clauseEventGoal = new ClauseEvent(false, goalEvent);
+		ClauseNode goal = new ClauseNode(new Clause("Goal", clauseEventGoal));
+		
+		IndirectInferenceEngine search = new IndirectInferenceEngine(knowledgeBase);
 		List<AbstractNode> results = search.start(null , goal); 
 	}
 	
@@ -148,7 +150,7 @@ public class testGenericDirectInference {
 		Clause six = new Clause("6", eventsOfSix, conclusionOfSix);
 		knowledgeBase.add(six);
 		
-		Clause seven = createSimpleClause("7", true, coffee);
+		Clause seven = createSimpleClause("7", false, coffee);
 		knowledgeBase.add(seven);
 		
 		Clause eight = createSimpleClause("8", true, tea);

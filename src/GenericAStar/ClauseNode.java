@@ -18,10 +18,18 @@ public class ClauseNode extends AbstractNode {
 	
 	@Override
 	public int compareTo(AbstractNode o) {
-		if ((_gScore + _fScore) > (o.getGScore() + o.getFScore()))
+		double score = _gScore + _fScore;
+		double otherScore = o.getGScore() + o.getFScore();
+		if (score > otherScore)
 			return 1; 
-		if ((_gScore + _fScore) < (o.getGScore() + o.getFScore()))
+		else if (score < otherScore)
 			return -1; 
-		return 0;
+		else
+			return 0;
+	}
+	
+	@Override
+	public String toString(){
+		return "Clause node " + ((Clause) this._object).toString();
 	}
 }

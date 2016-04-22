@@ -8,10 +8,13 @@ public class ClauseNode extends Node{
 	
 	@Override
 	public int compareTo(Node o) {
-		if ((_gScore + _fScore) > (o.getGScore() + o.getFScore()))
+		double score = _gScore + _fScore;
+		double otherScore = o.getGScore() + o.getFScore();
+		if (score > otherScore)
 			return 1; 
-		if ((_gScore + _fScore) < (o.getGScore() + o.getFScore()))
+		else if (score < otherScore)
 			return -1; 
-		return 0;
+		else
+			return 0;
 	}
 }

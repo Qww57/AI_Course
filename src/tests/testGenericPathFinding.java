@@ -2,23 +2,18 @@ package tests;
 
 import java.awt.Point;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.*;
 
-import DirectInferenceEngine.Clause;
-import DirectInferenceEngine.ClauseEvent;
-import DirectInferenceEngine.Event;
 import GenericAStar.AbstractNode;
-import GenericAStar.ClauseNode;
-import GenericAStar.DirectInferenceEngine;
 import GenericAStar.MapInfo;
 import GenericAStar.PathFinding;
 import GenericAStar.RoadNode;
 
 /**
- * Unit test class for the methods creating the input from the resource text file.
+ * Test file that tests the {@link PathFinding} based on the {@link AStar}
+ * algorithm with two basic examples.
  * 
  * @author Quentin
  *

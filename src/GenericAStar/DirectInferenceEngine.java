@@ -112,7 +112,7 @@ public class DirectInferenceEngine extends AStar {
 				if (clause.getEvents().get(j).getEvent().equals(event)){
 					if (conclusionValue != clause.getEvents().get(j).getValue())
 						childFound = true;
-				}
+				} 
 			}
 			
 			if (childFound == true){
@@ -152,8 +152,10 @@ public class DirectInferenceEngine extends AStar {
     	// Checking if we are getting the goal
     	Clause goalClause = (Clause) goal.getObject();
 		String goalName = goalClause.getConclusion().getEvent().getName();
+    	boolean goalStatus = goalClause.getConclusion().getValue();
     	
-    	if (getStatusOfEventFromtPool(goalName) == Status.TRUE){
+		if ((getStatusOfEventFromtPool(goalName) == Status.TRUE && goalStatus == true)
+				|| (getStatusOfEventFromtPool(goalName) == Status.FALSE && goalStatus == false)){
     		cameFrom.put(goal, current);
     		System.out.println("We have our goal: " + goalClause.getConclusion().getEvent().getName());
     		results = reconstructPath(goal);	    		
@@ -203,10 +205,13 @@ public class DirectInferenceEngine extends AStar {
 	 * @param current - current node containing the clause we want to solve
 	 */
 	private static void solveClause(AbstractNode current) {
+		
+		simplifyClause(current);
+		
 		Clause clause = (Clause) current.getObject();
 		
 		if (unknownElements(clause) == 0){
-			// 
+			 
 			System.out.println("Clause " + clause.toString() + " is solvable");
 			
 			// Check if we should add the conclusion in the pool event
@@ -239,6 +244,15 @@ public class DirectInferenceEngine extends AStar {
 	}
 	
 	/**
+	 * Simplify a clause: a v a => a  
+	 * 
+	 * @param current - current node containing the clause we want to solve
+	 */
+	private static void simplifyClause(AbstractNode current) {
+		// TODO Auto-generated method stub		
+	}
+
+	/**
 	 * Return the number of events that are still unknown
 	 * 
 	 * @param clause - clause we want to check
@@ -266,9 +280,11 @@ public class DirectInferenceEngine extends AStar {
 		PriorityQueue<AbstractNode> updatedOpenSet = new PriorityQueue<AbstractNode>();
 		while(!openSet.isEmpty()){
 			ClauseNode current = (ClauseNode) openSet.poll();
+			
 			double newFScore = staticHeuristicCost(current);
 			fScore.put(current, new Double(newFScore));
 			current.setFScore(newFScore);
+			
 			updatedOpenSet.add(current);
 		}
 		openSet = updatedOpenSet;
@@ -289,6 +305,12 @@ public class DirectInferenceEngine extends AStar {
 		return unknownElements(clause);
 	}
 	
+	/**
+	 * TODO description
+	 * 
+	 * @param description
+	 * @return
+	 */
 	private static Status getStatusOfEventFromtPool(String description){
 		Status status = Status.UNKWON;
 		for (int i = 0; i < eventPool.size(); i++ ){

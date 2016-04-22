@@ -42,7 +42,7 @@ public abstract class AStar{
 	// For each node, the cost of getting from the start node to that node
 	protected static HashMap<AbstractNode, Double> gScore;
 	
-	// Hashmap remembering the previous node of the shortest path to get here
+	// Hash map remembering the previous node of the shortest path to get here
 	protected static HashMap<AbstractNode, AbstractNode> cameFrom;
 	
 	// List of nodes as result of the solving algorithm
@@ -53,6 +53,7 @@ public abstract class AStar{
 	/**
 	 * Constructor used in order to initialize the A Star Algorithm by providing the
 	 * data base to perform treatments on.
+	 * 
 	 * @param data - data base 
 	 */
 	public AStar(Object data){
@@ -71,6 +72,7 @@ public abstract class AStar{
 	
 	/**
 	 * Function used in order to start the A Star algorithm.
+	 * 
 	 * @param start - starting node to perform computations on
 	 * @param goal - goal we want to reach using A star
 	 * @return List of nodes to follow to reach the goal node from the starting node
@@ -82,12 +84,19 @@ public abstract class AStar{
 		long startTime = System.currentTimeMillis(); 
 		
 		initializeSets(start, goal);
-	    
+	    int counter = 1;
+		System.out.println("Starting the loop");
 	    while (!openSet.isEmpty()){
+	    	
+	    	// printOpenSet(openSet);
+	    	
 	    	// Get first node from openSet using the comparable from the node
 	    	AbstractNode current = openSet.poll();
-	    	
-	 	    // Checking if we are getting the goal
+	    	System.out.println("");
+	    	System.out.println("Iteration number: " + counter + " for: " + current.toString());
+	    	counter++;
+	 	    
+	    	// Doing, some treatments and checking if we are getting the goal
 	 	    if (goalChecking(current, goal)){
 	 	    	break;
 	 	    }
@@ -110,9 +119,7 @@ public abstract class AStar{
 					double tentative_gScore = gScore.get(current) + dist_between(current, child);
 					
 					// Child not into the openSet
-					if (!openSet.contains(child)){						
-						openSet.add(child);
-						cameFrom.put(child, current);
+					if (!openSet.contains(child)){											
 						
 						// Computing and saving the cost in the hash maps	
 						double tentative_fScore = heuristic_cost_estimate(child, goal);
@@ -122,6 +129,10 @@ public abstract class AStar{
 						// Saving the costs into the node
 						child.setGScore(tentative_gScore);
 						child.setFScore(tentative_fScore);
+						
+						// Adding the child node to the openSet
+						openSet.add(child);
+						cameFrom.put(child, current);
 					}
 					// Child is in the openSet
 					else {
@@ -186,7 +197,7 @@ public abstract class AStar{
 	 * This function is used in order to find the possible node children among the object
 	 * set given as input to the algorithm in the method startAStar.
 	 * 
-	 * @param node
+	 * @param node - current node the algorithm is dealing with 
 	 */
 	protected abstract void findChildren(AbstractNode node);
 	
@@ -234,5 +245,24 @@ public abstract class AStar{
 			knowledgeBase.get(i).print();
 		}
 		System.out.println("-------");		
+	}
+	
+	/**
+	 * TO REMOVE
+	 * @param openSet1
+	 */
+	private static void printOpenSet(PriorityQueue<AbstractNode> openSet1){
+ 		System.out.println();
+ 		System.out.println("--- Verifications for the openSet ---");
+ 		System.out.println("Size of the initial open set: " + openSet1.size());
+ 		Object[] openSetArray = openSet1.toArray();
+ 		for (int i = 0; i < openSetArray.length; i++){
+ 			ClauseNode clauseNode = (ClauseNode) openSetArray[i];
+ 			Clause clause = (Clause) clauseNode.getObject();
+ 			System.out.println(clause.toString() 
+ 					+ " - F: " + clauseNode.getFScore() 
+ 					+ " - G: " + clauseNode.getGScore());
+ 		}
+ 		System.out.println();
 	}
 }
