@@ -1,9 +1,9 @@
-package GenericAStar;
+package AbstractAStar;
 
 import java.util.PriorityQueue;
 
 /**
- * Class defining an abstract node that is used with {@link AStar} 
+ * Class defining an abstract node that is used with {@link AbstractAStar} 
  * This class centered around some variables used in order to manage
  * with true structure (children, parent), elements linked to cost estimations
  * (gScore: previous cost and fScore: future cost estimation) and an object

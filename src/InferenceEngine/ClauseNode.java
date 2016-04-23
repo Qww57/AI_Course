@@ -1,10 +1,11 @@
-package GenericAStar;
-import DirectInferenceEngine.Clause;
+package InferenceEngine;
+import AbstractAStar.AbstractAStar;
+import AbstractAStar.AbstractNode;
 
 /**
  * ClauseNode is a class extending the {@link AbstractNode} class 
  * in order to be able to use the {@link Clause} classes inside the
- * {@link DirectInferenceEngine} which extends the {@link AStar} 
+ * {@link DirectInferenceEngine} which extends the {@link AbstractAStar} 
  * abstract class.
  * 
  * @author Quentin

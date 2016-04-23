@@ -1,4 +1,4 @@
-package DirectInferenceEngine;
+package InferenceEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,29 +50,13 @@ public class Clause {
 	}
 
 	/** Getters and setters **/
-	
-	public synchronized String getClauseID() {
-		return clauseID;
-	}
-
-	public synchronized void setClauseID(String clauseID) {
-		this.clauseID = clauseID;
-	}
 
 	public synchronized List<ClauseEvent> getEvents() {
 		return events;
 	}
 
-	public synchronized void setEvents(List<ClauseEvent> events) {
-		this.events = events;
-	}
-
 	public ClauseEvent getConclusion() {
 		return conclusion;
-	}
-
-	public void setConclusion(ClauseEvent conclusion) {
-		this.conclusion = conclusion;
 	}
 	
 	public String toString(){
@@ -101,6 +85,8 @@ public class Clause {
 						condition += events.get(i).getEvent().getName() + " or ";
 					}
 				}
+				if (events.get(events.size()-1).getValue() == false)
+					condition += "no ";
 				condition += events.get(events.size()-1).getEvent().getName();
 			}	
 		}

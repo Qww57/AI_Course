@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 
-import PathFinding.Node;
+import AbstractAStar.AbstractNode;
 
 /**
  * Class instanciating a map and reading the roads from an resource text file
@@ -23,6 +23,7 @@ public class MapInfo {
 	}
 	
 	/**
+	 * Read the roads from text file and put it inside this class
 	 * 
 	 * @param path
 	 */
@@ -156,7 +157,7 @@ public class MapInfo {
 	 * 
 	 * @param nodes
 	 */
-	public void printResults(List<Node> nodes){
+	public void printResults(List<AbstractNode> nodes){
 		System.out.println("");	
 		Road road = null;
 		
@@ -167,15 +168,15 @@ public class MapInfo {
 		}
 		
 		for (int i = 0; i < roadNodes.size()-1; i++){
-			RoadNode node = roadNodes.get(i);
-			RoadNode next = roadNodes.get(i+1);
-			road = getRoadByStartAndEnd(node.getPosition(), next.getPosition());
+			Point point1 = (Point) roadNodes.get(i).getObject();
+			Point point2 = (Point) roadNodes.get(i+1).getObject();			
+			road = getRoadByStartAndEnd(point1, point2);
 			if (road != null)
 				System.out.println(i+1 + ") Go into: " + road.getStreetName()
-						+ " - From " + node.getPosition() + " to " + next.getPosition());
+						+ " - From " + point1 + " to " + point2);
 			else
 				System.out.println(i+1 + ") Go into: unknown road"
-						+ " - From " + node.getPosition() + " to " + next.getPosition());
+						+ " - From " + point1 + " to " + point2);
 		}
 	}
 }

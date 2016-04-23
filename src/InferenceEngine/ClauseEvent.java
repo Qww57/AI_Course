@@ -1,4 +1,4 @@
-package DirectInferenceEngine;
+package InferenceEngine;
 
 /**
  * A clause event is a class used in order to describe a
@@ -29,10 +29,6 @@ public class ClauseEvent {
 	
 	public synchronized Event getEvent() {
 		return event;
-	}
-
-	public synchronized void setEvent(Event event) {
-		this.event = event;
 	}
 
 	public synchronized boolean getValue() {

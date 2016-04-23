@@ -1,17 +1,16 @@
-package GenericAStar;
+package InferenceEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import DirectInferenceEngine.Clause;
-import DirectInferenceEngine.ClauseEvent;
-import DirectInferenceEngine.Event;
-import DirectInferenceEngine.Event.Status;
+import AbstractAStar.AbstractAStar;
+import AbstractAStar.AbstractNode;
+import InferenceEngine.Event.Status;
 
 /**
- * This class is extending the {@link AStar} abstract class in order to 
+ * This class is extending the {@link AbstractAStar} abstract class in order to 
  * deal with {@link Clause} objects. It is implementing an inference engine
  * based on refutation proof, tree structure and A* Algorithm.
  * 
@@ -25,7 +24,7 @@ import DirectInferenceEngine.Event.Status;
  *
  */
 @SuppressWarnings("boxing")
-public class IndirectInferenceEngine extends AStar {
+public class IndirectInferenceEngine extends AbstractInferenceEngine {
 	
 	// Negation of the goal that will be used to conduct our resolution
 	protected static ClauseNode startingPoint;
@@ -33,8 +32,6 @@ public class IndirectInferenceEngine extends AStar {
 	public IndirectInferenceEngine(List<Clause> kBase) {
 		super(kBase);
 	}
-
-	protected static List<Event> eventPool = new ArrayList<Event>();
 	
 	@Override
 	protected void initializeSets(AbstractNode start, AbstractNode goal) {
@@ -117,12 +114,6 @@ public class IndirectInferenceEngine extends AStar {
 	}
 
 	@Override
-	protected List<AbstractNode> reconstructPath(AbstractNode current) {
-		// Not needed here
-		return null;
-	}
-
-	@Override
 	protected void findChildren(AbstractNode node) {
 		
 		Clause startingClause = ((Clause) startingPoint.getObject());
@@ -167,11 +158,6 @@ public class IndirectInferenceEngine extends AStar {
 		knowledgeBase.removeAll(toDelete);
 	}
 
-	@Override
-	protected double dist_between(AbstractNode node1, AbstractNode node2) {
-		return 0;
-	}
-
 	/**
 	 * The heuristic function is dealing with the following three parameters:
 	 * - Number of unknown elements inside the checked clause 
@@ -195,7 +181,7 @@ public class IndirectInferenceEngine extends AStar {
 	 * 
 	 * This is just because java wants us to use a static method for the fScore update in 
 	 * updateAllFCost(), but the heuristic method cannot be turned to static since it 
-	 * is declared as an abstract method in {@link AStar}. 
+	 * is declared as an abstract method in {@link AbstractAStar}. 
 	 * This what we had to create a copy of the heuristic.
 	 * 
 	 * @param
@@ -391,32 +377,4 @@ public class IndirectInferenceEngine extends AStar {
 		}
 		return interesting;
 	}
-	
-	/* PRINTERS */
-	
-	private static void printOpenSet(){
- 		System.out.println();
- 		System.out.println("--- Verifications for the openSet ---");
- 		System.out.println("Size of the initial open set: " + openSet.size());
- 		Object[] openSetArray = openSet.toArray();
- 		for (int i = 0; i < openSetArray.length; i++){
- 			ClauseNode clauseNode = (ClauseNode) openSetArray[i];
- 			Clause clause = (Clause) clauseNode.getObject();
- 			System.out.println(clause.toString() 
- 					+ " - F: " + clauseNode.getFScore() 
- 					+ " - G: " + clauseNode.getGScore());
- 		}
- 		System.out.println();
-	}
-	
-	private static void printEventPool(){
-		System.out.println();
-		System.out.println("--- Verifications for the eventPool ---");
-		System.out.println("Size of the initial true set: " + eventPool.size());
-		for (int i = 0; i < eventPool.size(); i++){
-			eventPool.get(i).print();
-		}
-		System.out.println();
-	}
-
 }

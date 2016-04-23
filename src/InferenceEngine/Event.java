@@ -1,4 +1,4 @@
-package DirectInferenceEngine;
+package InferenceEngine;
 
 /**
  * An event is a fact. An event is something that is composed of a
@@ -38,10 +38,6 @@ public class Event {
 	
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Status getStatus() {

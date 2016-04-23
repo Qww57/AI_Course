@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.junit.*;
 
-import GenericAStar.AbstractNode;
-import GenericAStar.MapInfo;
-import GenericAStar.PathFinding;
-import GenericAStar.RoadNode;
+import AbstractAStar.AbstractNode;
+import PathFinding.MapInfo;
+import PathFinding.PathFinding;
+import PathFinding.RoadNode;
 
 /**
- * Test file that tests the {@link PathFinding} based on the {@link AStar}
+ * Test file that tests the {@link PathFinding} based on the {@link AbstractAStar}
  * algorithm with two basic examples.
  * 
  * @author Quentin

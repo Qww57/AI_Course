@@ -1,8 +1,8 @@
-package GenericAStar;
+package AbstractAStar;
 import java.util.*;
 
-import DirectInferenceEngine.Clause;
-import GenericAStar.MapInfo;
+import InferenceEngine.Clause;
+import PathFinding.MapInfo;
 
 /**
  * This class is an abstract class providing the basis of an A* Algorithm
@@ -20,7 +20,7 @@ import GenericAStar.MapInfo;
  *
  */
 @SuppressWarnings({ "unchecked", "rawtypes", "boxing" })
-public abstract class AStar{	
+public abstract class AbstractAStar{	
 	
 	/** Class members **/
 	
@@ -56,7 +56,7 @@ public abstract class AStar{
 	 * 
 	 * @param data - data base 
 	 */
-	public AStar(Object data){
+	public AbstractAStar(Object data){
 		// Creating a copy of the list of the inputs in order to delete some without consequences
 		if (data instanceof MapInfo){
 			MapInfo mapInfo = (MapInfo) data;

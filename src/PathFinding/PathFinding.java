@@ -1,4 +1,4 @@
-package GenericAStar;
+package PathFinding;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import GenericAStar.MapInfo;
-import PathFinding.Road;
+import AbstractAStar.AbstractAStar;
+import AbstractAStar.AbstractNode;
 
 /**
- * This class is extending the {@link AStar} abstract class in order to 
+ * This class is extending the {@link AbstractAStar} abstract class in order to 
  * deal with {@link Road} objects. It is implementing a path finding algorithm
  * based on tree structure and A* Algorithm.
  * 
@@ -20,7 +20,7 @@ import PathFinding.Road;
  *
  */
 @SuppressWarnings("boxing")
-public class PathFinding extends AStar {
+public class PathFinding extends AbstractAStar {
 
 	public PathFinding(MapInfo mapInfo) {
 		super(mapInfo);

@@ -1,17 +1,16 @@
-package GenericAStar;
+package InferenceEngine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import DirectInferenceEngine.Clause;
-import DirectInferenceEngine.ClauseEvent;
-import DirectInferenceEngine.Event;
-import DirectInferenceEngine.Event.Status;
+import AbstractAStar.AbstractAStar;
+import AbstractAStar.AbstractNode;
+import InferenceEngine.Event.Status;
 
 /**
- * This class is extending the {@link AStar} abstract class in order to 
+ * This class is extending the {@link AbstractAStar} abstract class in order to 
  * deal with {@link Clause} objects. It is implementing an inference engine
  * based on direct proof, tree structure and A* Algorithm.
  * 
@@ -25,13 +24,11 @@ import DirectInferenceEngine.Event.Status;
  *
  */
 @SuppressWarnings("boxing")
-public class DirectInferenceEngine extends AStar {
+public class DirectInferenceEngine extends AbstractInferenceEngine {
 
 	public DirectInferenceEngine(List<Clause> kBase) {
 		super(kBase);
 	}
-
-	protected static List<Event> eventPool = new ArrayList<Event>();
 	
 	@Override
 	protected void initializeSets(AbstractNode start, AbstractNode goal) {
@@ -82,13 +79,7 @@ public class DirectInferenceEngine extends AStar {
  		}
  		
  		// Verifications of the openSet
- 		printOpenSet(openSet);		
-	}
-
-	@Override
-	protected List<AbstractNode> reconstructPath(AbstractNode current) {
-		/* Not needed in that one */
-		return null;
+ 		printOpenSet();		
 	}
 
 	@Override
@@ -132,11 +123,6 @@ public class DirectInferenceEngine extends AStar {
 	protected double heuristic_cost_estimate(AbstractNode o1, AbstractNode goal) {
 		Clause clause = (Clause) o1.getObject();
 		return unknownElements(clause);
-	}
-
-	@Override
-	protected double dist_between(AbstractNode o1, AbstractNode o2) {
-		return 0;
 	}
 	
 	@Override
@@ -244,12 +230,35 @@ public class DirectInferenceEngine extends AStar {
 	}
 	
 	/**
-	 * Simplify a clause: a v a => a  
+	 * Simplify a clause: a v a => a . Working.
+	 * TODO should be made on the knowledge base before here it is not used when computing
+	 * f costs
 	 * 
 	 * @param current - current node containing the clause we want to solve
 	 */
 	private static void simplifyClause(AbstractNode current) {
-		// TODO Auto-generated method stub		
+		List<ClauseEvent> startingEvents = ((Clause) current.getObject()).getEvents();
+		List<ClauseEvent> toDelete = new ArrayList<ClauseEvent>();
+		boolean simplification = false;
+		
+		for (int i = 0; i < startingEvents.size(); i ++){
+			for (int j = 0; j < startingEvents.size(); j++){
+				if (startingEvents.get(i).getEvent().getName() == startingEvents.get(j).getEvent().getName() 
+						&& startingEvents.get(i).getEvent().getStatus() == startingEvents.get(j).getEvent().getStatus()
+						&& i != j
+						&& i < j){
+					simplification = true;
+					toDelete.add(startingEvents.get(i));
+				}				
+			}
+			if (startingEvents.get(i).getEvent().getName() == ((Clause) current.getObject()).getConclusion().getEvent().getName()
+					&& startingEvents.get(i).getEvent().getStatus() == ((Clause) current.getObject()).getConclusion().getEvent().getStatus()){
+				toDelete.add(startingEvents.get(i));
+			}
+		}
+		startingEvents.removeAll(toDelete);
+		if (simplification)
+			System.out.println("Simplified to: " + ((Clause) current.getObject()).toString());
 	}
 
 	/**
@@ -296,7 +305,7 @@ public class DirectInferenceEngine extends AStar {
 	 * 
 	 * This is just because java wants us to use a static method for the fScore update in 
 	 * updateAllFCost(), but the heuristic method cannot be turned to static since it 
-	 * is declared as an abstract method in {@link AStar}. 
+	 * is declared as an abstract method in {@link AbstractAStar}. 
 	 * This what we had to create a copy of the heuristic.
 	 * 
 	 * @param node - current node we are dealing with
@@ -321,32 +330,5 @@ public class DirectInferenceEngine extends AStar {
 			}
 		}
 		return status;
-	}
-		
-	/* PRINTERS */
-	
-	private static void printOpenSet(PriorityQueue<AbstractNode> openSet1){
- 		System.out.println();
- 		System.out.println("--- Verifications for the openSet ---");
- 		System.out.println("Size of the initial open set: " + openSet1.size());
- 		Object[] openSetArray = openSet1.toArray();
- 		for (int i = 0; i < openSetArray.length; i++){
- 			ClauseNode clauseNode = (ClauseNode) openSetArray[i];
- 			Clause clause = (Clause) clauseNode.getObject();
- 			System.out.println(clause.toString() 
- 					+ " - F: " + clauseNode.getFScore() 
- 					+ " - G: " + clauseNode.getGScore());
- 		}
- 		System.out.println();
-	}
-	
-	private static void printEventPool(){
-		System.out.println();
-		System.out.println("--- Verifications for the eventPool ---");
-		System.out.println("Size of the initial true set: " + eventPool.size());
-		for (int i = 0; i < eventPool.size(); i++){
-			eventPool.get(i).print();
-		}
-		System.out.println();
 	}
 }
