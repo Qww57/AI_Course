@@ -6,16 +6,15 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import DirectInferenceEngine.Clause;
-import DirectInferenceEngine.ClauseEvent;
-import DirectInferenceEngine.Event;
-
-import GenericAStar.AbstractNode;
-import GenericAStar.ClauseNode;
-import GenericAStar.DirectInferenceEngine;
+import AbstractAStar.AbstractNode;
+import InferenceEngine.Clause;
+import InferenceEngine.ClauseEvent;
+import InferenceEngine.ClauseNode;
+import InferenceEngine.DirectInferenceEngine;
+import InferenceEngine.Event;
 
 /**
- * Test file that tests the {@link DirectInferenceEngine} based on the {@link AStar}
+ * Test file that tests the {@link DirectInferenceEngine} based on the {@link AbstractAStar}
  * algorithm with two examples. 
  * 
  * @author Quentin
@@ -80,7 +79,11 @@ public class testGenericDirectInference {
 	}
 	
 	/**
-	 * Method used to create the knowledge base for the breakfast example
+	 * Method used to create the knowledge base for the breakfast example.
+	 * The knowledgeBase is a bit different from the one in the lecture 
+	 * since it introduces some duplicates inside the clauses, such as in 
+	 * the clauses 2 and 5. This duplicates should be handled inside the 
+	 * algorithm of the inference engine.
 	 */
 	private void CreateKnowledgeBase_Breakfast(){ 
 		
@@ -118,6 +121,7 @@ public class testGenericDirectInference {
 		List<ClauseEvent> eventsOfTwo= new ArrayList<ClauseEvent>();
 		eventsOfTwo.add(new ClauseEvent(false, hotdrink));
 		eventsOfTwo.add(new ClauseEvent(false, food));
+		eventsOfTwo.add(new ClauseEvent(false, food));
 		ClauseEvent conclusionOfTwo =  new ClauseEvent(true, breakfast);
 		Clause two = new Clause("2", eventsOfTwo, conclusionOfTwo);
 		knowledgeBase.add(two);
@@ -138,6 +142,7 @@ public class testGenericDirectInference {
 		List<ClauseEvent> eventsOfFive= new ArrayList<ClauseEvent>();
 		eventsOfFive.add(new ClauseEvent(false, toast));
 		eventsOfFive.add(new ClauseEvent(false, butter));
+		eventsOfFive.add(new ClauseEvent(true, food));
 		ClauseEvent conclusionOfFive =  new ClauseEvent(true, food);
 		Clause five = new Clause("5", eventsOfFive, conclusionOfFive);
 		knowledgeBase.add(five);

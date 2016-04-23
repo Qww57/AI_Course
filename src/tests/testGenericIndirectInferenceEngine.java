@@ -6,16 +6,15 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import DirectInferenceEngine.Clause;
-import DirectInferenceEngine.ClauseEvent;
-import DirectInferenceEngine.Event;
-
-import GenericAStar.AbstractNode;
-import GenericAStar.ClauseNode;
-import GenericAStar.IndirectInferenceEngine;
+import AbstractAStar.AbstractNode;
+import InferenceEngine.Clause;
+import InferenceEngine.ClauseEvent;
+import InferenceEngine.ClauseNode;
+import InferenceEngine.Event;
+import InferenceEngine.IndirectInferenceEngine;
 
 /**
- * Test file that tests the {@link IndirectInferenceEngine} based on the {@link AStar}
+ * Test file that tests the {@link IndirectInferenceEngine} based on the {@link AbstractAStar}
  * algorithm with two examples. 
  * 
  * @author Quentin
@@ -59,7 +58,7 @@ public class testGenericIndirectInferenceEngine {
 		List<AbstractNode> results = search.start(null , goal); 
 	}
 	
-	//@Test
+	@Test
 	public void testNespresso(){
 		System.out.println("--- NESPRESSO EXAMPLE ---");
 		System.out.println("");
@@ -74,7 +73,7 @@ public class testGenericIndirectInferenceEngine {
 		System.out.println();
 		System.out.println("Our goal is: " + goalEvent.getName());
 		
-		ClauseEvent clauseEventGoal = new ClauseEvent(false, goalEvent);
+		ClauseEvent clauseEventGoal = new ClauseEvent(true, goalEvent);
 		ClauseNode goal = new ClauseNode(new Clause("Goal", clauseEventGoal));
 		
 		IndirectInferenceEngine search = new IndirectInferenceEngine(knowledgeBase);
@@ -261,11 +260,11 @@ public class testGenericIndirectInferenceEngine {
 		
 		List<ClauseEvent> eventOfEleven= new ArrayList<ClauseEvent>();
 		eventOfEleven.add(new ClauseEvent(true, tea));
-		ClauseEvent conclusionOfEleven =  new ClauseEvent(true, coffee);
+		ClauseEvent conclusionOfEleven =  new ClauseEvent(false, coffee);
 		Clause eleven = new Clause("A11", eventOfEleven, conclusionOfEleven);
 		knowledgeBase.add(eleven);
 		
-		Clause twelve = createSimpleClause("A12", false, tea);
+		Clause twelve = createSimpleClause("A12", true, coffee);
 		knowledgeBase.add(twelve);
 		
 		Clause thirteen = createSimpleClause("A13", true, okboiler);
