@@ -76,7 +76,7 @@ public class testGenericPathFinding {
 		PathFinding search = new PathFinding(map);
 		List<AbstractNode> results = search.start(startNode, goalNode);
 		
-		// map.printResults(results);	
+		map.printResults(results);	
 		printCosts(results);
 	}
 	

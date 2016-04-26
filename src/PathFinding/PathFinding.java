@@ -99,7 +99,7 @@ public class PathFinding extends AbstractAStar {
     	if (current.getObject().equals(goal.getObject())){
     		cameFrom.put(goal, current);
     		results = reconstructPath(goal);
-    		printAllLists();
+    		//printAllLists();
     		return true;
     	}   	
     	return false;

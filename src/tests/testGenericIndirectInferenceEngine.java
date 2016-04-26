@@ -191,6 +191,7 @@ public class testGenericIndirectInferenceEngine {
 		eventBase.add(tea);
 		Event coffee = new Event("coffee");
 		eventBase.add(coffee);
+		Event trap = new Event("trap");
 		
 		// Creating the clausal forms
 		List<ClauseEvent> eventsOfOne = new ArrayList<ClauseEvent>();
@@ -264,8 +265,11 @@ public class testGenericIndirectInferenceEngine {
 		Clause eleven = new Clause("A11", eventOfEleven, conclusionOfEleven);
 		knowledgeBase.add(eleven);
 		
-		Clause twelve = createSimpleClause("A12", true, coffee);
-		knowledgeBase.add(twelve);
+		List<ClauseEvent> eventOfSixteen= new ArrayList<ClauseEvent>();
+		eventOfSixteen.add(new ClauseEvent(true, coffee));
+		ClauseEvent conclusionOfSixteen =  new ClauseEvent(false, tea);
+		Clause sixten = new Clause("A12", eventOfSixteen, conclusionOfSixteen);
+		knowledgeBase.add(sixten);
 		
 		Clause thirteen = createSimpleClause("A13", true, okboiler);
 		knowledgeBase.add(thirteen);
@@ -275,6 +279,9 @@ public class testGenericIndirectInferenceEngine {
 		
 		Clause fifteen = createSimpleClause("A15", true, water);
 		knowledgeBase.add(fifteen);
+		
+		Clause twelve = createSimpleClause("A16", true, coffee);
+		knowledgeBase.add(twelve);
 		
 		goalEvent = hotdrink;
 	}

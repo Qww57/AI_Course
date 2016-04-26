@@ -170,7 +170,7 @@ public class IndirectInferenceEngine extends AbstractInferenceEngine {
 		double factor2 = negatedElements(((Clause) node.getObject()));
 		double factor3 = numberElements(((Clause) node.getObject()));
 		double score = factor1 * 100 + factor2 * 10 + factor3;
-		System.out.println("Computing heuristic for " + node.toString() + " : " + score);
+		// System.out.println("Computing heuristic for " + node.toString() + " : " + score);
 		return score; 
 	}
 	
